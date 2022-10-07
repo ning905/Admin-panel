@@ -6,7 +6,7 @@ import Home from "./pages/home/Home.jsx"
 import List from "./pages/list/List.jsx"
 import Login from "./pages/login/Login.jsx"
 import New from "./pages/new/New.jsx"
-import Single from "./pages/single/Single.jsx"
+import Single from "./pages/singleItem/Single.jsx"
 import "./styles/dark.scss"
 
 function App() {
