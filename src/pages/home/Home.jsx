@@ -1,9 +1,9 @@
-import Chart from "../../components/chart/Chart"
-import Featured from "../../components/featured/Featured"
-import Navbar from "../../components/navbar/Navbar"
-import Sidebar from "../../components/sidebar/Sidebar"
-import RevenueTable from "../../components/revenueTable/RevenueTable"
-import Widget from "../../components/widget/Widget"
+import Chart from "../../components/chart/Chart.jsx"
+import Featured from "../../components/featured/Featured.jsx"
+import Navbar from "../../components/navbar/Navbar.jsx"
+import Sidebar from "../../components/sidebar/Sidebar.jsx"
+import RevenueTable from "../../components/revenueTable/RevenueTable.jsx"
+import Widget from "../../components/widget/Widget.jsx"
 import "./home.scss"
 
 export default function Home() {

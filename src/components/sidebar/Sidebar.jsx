@@ -13,7 +13,7 @@ import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined"
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined"
 import { Link } from "react-router-dom"
 import { useContext } from "react"
-import { DarkModeContext } from "../../context/darkModeContext"
+import { DarkModeContext } from "../../context/darkModeContext.js"
 
 export default function Sidebar() {
 	const { dispatch } = useContext(DarkModeContext)

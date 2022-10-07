@@ -1,6 +1,6 @@
-import DataTable from "../../components/dataTable/DataTable"
-import Navbar from "../../components/navbar/Navbar"
-import Sidebar from "../../components/sidebar/Sidebar"
+import DataTable from "../../components/dataTable/DataTable.jsx"
+import Navbar from "../../components/navbar/Navbar.jsx"
+import Sidebar from "../../components/sidebar/Sidebar.jsx"
 import "./list.scss"
 
 export default function List() {

@@ -1,8 +1,8 @@
 import "./single.scss"
-import Navbar from "../../components/navbar/Navbar"
-import Sidebar from "../../components/sidebar/Sidebar"
-import Chart from "../../components/chart/Chart"
-import RevenueTable from "../../components/revenueTable/RevenueTable"
+import Navbar from "../../components/navbar/Navbar.jsx"
+import Sidebar from "../../components/sidebar/Sidebar.jsx"
+import Chart from "../../components/chart/Chart.jsx"
+import RevenueTable from "../../components/revenueTable/RevenueTable.jsx"
 
 export default function Single() {
 	return (

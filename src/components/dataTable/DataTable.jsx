@@ -1,6 +1,6 @@
 import "./dataTable.scss"
 import { DataGrid } from "@mui/x-data-grid"
-import { userColumns, userRows } from "../../dataTableSource"
+import { userColumns, userRows } from "../../dataTableSource.js"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 

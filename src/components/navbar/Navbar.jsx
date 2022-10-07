@@ -8,7 +8,7 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined"
 import avatar from "../../assets/img/avatar.jpg"
 import { useContext } from "react"
-import { DarkModeContext } from "../../context/darkModeContext"
+import { DarkModeContext } from "../../context/darkModeContext.js"
 
 export default function Navbar() {
 	const { dispatch } = useContext(DarkModeContext)
