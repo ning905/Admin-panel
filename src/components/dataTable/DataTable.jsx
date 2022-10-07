@@ -5,15 +5,26 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 
 export default function DataTable() {
+	const [data, setData] = useState(userRows)
+
+	const handleDelete = (id) => {
+		setData(data.filter((item) => item.id !== id))
+	}
+
 	const actionColumn = {
 		field: "action",
 		headerName: "Action",
 		width: 200,
-		renderCell: () => {
+		renderCell: (params) => {
 			return (
 				<div className="cell-action">
-					<div className="view-button">View</div>
-					<div className="delete-button">Delete</div>
+					<Link to="/users/test" style={{ textDecoration: "none" }}>
+						<div className="view-button">View</div>
+					</Link>
+
+					<div className="delete-button" onClick={() => handleDelete(params.row.id)}>
+						Delete
+					</div>
 				</div>
 			)
 		},
@@ -29,7 +40,7 @@ export default function DataTable() {
 			</div>
 			<DataGrid
 				className="data-grid"
-				rows={userRows}
+				rows={data}
 				columns={userColumns.concat(actionColumn)}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
