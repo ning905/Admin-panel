@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  username     String        @unique
+  password     String        @db.VarChar(250)
+  role         Role          @default(USER)
+  profile      Profile?
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime?     @updatedAt
+}
+
+model Profile {
+  id        String    @id @default(uuid())
+  fullName  String
+  phone     String
+  address   String
+  country   String
+  imgUrl    String    @default("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png")
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Product {
+  id           String        @id @default(uuid())
+  title        String        @db.VarChar(250)
+  description  String
+  category     String
+  price        String
+  stock        Int
+  imgUrl       String        @default("https://www.4me.com/wp-content/uploads/2018/01/4me-icon-product.png")
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime?     @updatedAt
+}
+
+enum PaymenMethod {
+  ONLINE
+  CASH_ON_DELIVERY
+}
+
+enum Status {
+  APPROVED
+  PENDING
+  CANCELLED
+}
+
+model Transaction {
+  id            String       @id @default(uuid())
+  amount        Int
+  paymentMethod PaymenMethod @default(ONLINE)
+  status        Status       @default(PENDING)
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  productId     String
+  product       Product      @relation(fields: [productId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime?    @updatedAt
+}

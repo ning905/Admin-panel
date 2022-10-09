@@ -14,9 +14,9 @@ export default function Home() {
 				<Navbar />
 				<ul className="widgets">
 					<Widget type="user" />
+					<Widget type="product" />
 					<Widget type="order" />
 					<Widget type="earning" />
-					<Widget type="balance" />
 				</ul>
 				<div className="charts">
 					<Featured />
