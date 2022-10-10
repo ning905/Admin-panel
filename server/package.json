@@ -9,6 +9,13 @@
   "prisma": {
     "seed": "node prisma/seed.js"
   },
+  "prettier": {
+    "useTabs": true,
+    "semi": false,
+    "bracketSpacing": true,
+    "trailingComma": "es5",
+    "tabWidth": 1
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
