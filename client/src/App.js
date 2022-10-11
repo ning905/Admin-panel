@@ -8,6 +8,7 @@ import List from "./pages/list/List.jsx"
 import Login from "./pages/login/Login.jsx"
 import New from "./pages/new/New.jsx"
 import Single from "./pages/singleItem/Single.jsx"
+import SignUp from "./pages/signUp/SignUp.jsx"
 import "./styles/dark.scss"
 
 function App() {
@@ -22,19 +23,21 @@ function App() {
 	function RequireAuth({ children }) {
 		return currentUser ? children : <Navigate to="/login" />
 	}
-
+	console.log("currentUser", currentUser)
 	return (
 		<div className={appClass}>
 			<BrowserRouter>
 				<Routes>
 					<Route path="/">
 						<Route path="login" element={<Login />} />
+						<Route path="signup" element={<SignUp />} />
+
 						<Route
 							index
 							element={
-								// <RequireAuth>
-								<Home />
-								// </RequireAuth>
+								<RequireAuth>
+									<Home />
+								</RequireAuth>
 							}
 						/>
 						<Route path="users">

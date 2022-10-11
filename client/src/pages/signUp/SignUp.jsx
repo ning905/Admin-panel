@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import "./login.scss"
+import "./signUp.scss"
 import { Link, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/AuthContext"
 import Box from "@mui/material/Box"
@@ -8,9 +8,9 @@ import client from "../../utils/client"
 
 const tokenKey = process.env.REACT_APP_USER_TOKEN
 
-export default function Login() {
+export default function SignUp() {
 	const [error, setError] = useState("")
-	const [inputs, setInputs] = useState({ email: "", password: "" })
+	const [inputs, setInputs] = useState({})
 	const navigate = useNavigate()
 	const { dispatch } = useContext(AuthContext)
 
@@ -19,11 +19,11 @@ export default function Login() {
 		setInputs({ ...inputs, [name]: value })
 	}
 
-	async function handleLogin(e) {
+	async function handleSignUp(e) {
 		e.preventDefault()
 
 		try {
-			const response = await client.post("/users/login", inputs)
+			const response = await client.post("/users/signup", inputs)
 			const token = response.data.data
 			localStorage.setItem(tokenKey, token)
 			dispatch({ type: "LOGIN", payload: token })
@@ -34,9 +34,9 @@ export default function Login() {
 	}
 
 	return (
-		<div className="login">
+		<div className="signUp">
 			<h1>Welcome to the admin panel</h1>
-			<h2>Please login: </h2>
+			<h2>Sign up to get started!</h2>
 			<Box
 				className="box"
 				component="form"
@@ -45,7 +45,7 @@ export default function Login() {
 				}}
 				noValidate
 				autoComplete="off"
-				onSubmit={handleLogin}
+				onSubmit={handleSignUp}
 			>
 				<TextField
 					required
@@ -59,17 +59,44 @@ export default function Login() {
 				<TextField
 					required
 					variant="outlined"
+					label="Username"
+					type="text"
+					name="username"
+					value={inputs.username}
+					onChange={handleInput}
+				/>
+				<TextField
+					required
+					variant="outlined"
 					label="Password"
 					type="password"
 					name="password"
 					value={inputs.password}
 					onChange={handleInput}
 				/>
-				<button type="submit">Login</button>
+				<TextField
+					variant="outlined"
+					label="Full Name"
+					type="text"
+					name="fullName"
+					value={inputs.fullName}
+					onChange={handleInput}
+				/>
+				<TextField
+					variant="outlined"
+					label="Phone Number"
+					type="text"
+					name="phone"
+					value={inputs.phone}
+					onChange={handleInput}
+				/>
+				<button type="submit">Register</button>
 			</Box>
+
 			{error && <span>{error}</span>}
+
 			<p>
-				Not have an account yet? Sign up <Link to="/signup">here</Link>
+				Already have an account? Login <Link to="/login">here</Link>
 			</p>
 		</div>
 	)
