@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client")
-import bcrypt from "bcrypt"
+const bcrypt = require("bcrypt")
 
 const prisma = new PrismaClient()
 
@@ -7,7 +7,8 @@ async function main() {
 	const users = []
 	const products = []
 	const transactions = []
-	const hashed = await bcrypt.hash("123", 8)
+	const saltRounds = 8
+	const hashed = await bcrypt.hash("123", saltRounds)
 	const userData = {
 		password: hashed,
 		phone: "012345678",

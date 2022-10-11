@@ -32,8 +32,8 @@ model Profile {
   id        String    @id @default(uuid())
   fullName  String
   phone     String
-  address   String
-  country   String
+  address   String?
+  country   String?
   imgUrl    String    @default("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png")
   userId    String    @unique
   user      User      @relation(fields: [userId], references: [id])

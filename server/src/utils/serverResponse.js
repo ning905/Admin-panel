@@ -5,6 +5,7 @@ const STATUS_MESSAGES = {
 	401: "fail",
 	403: "fail",
 	404: "fail",
+	409: "fail",
 	500: "error",
 }
 
