@@ -1,12 +1,15 @@
 const { PrismaClient } = require("@prisma/client")
+import bcrypt from "bcrypt"
+
 const prisma = new PrismaClient()
 
 async function main() {
 	const users = []
 	const products = []
 	const transactions = []
+	const hashed = await bcrypt.hash("123", 8)
 	const userData = {
-		password: "123",
+		password: hashed,
 		phone: "012345678",
 		address: "Some house, Some Street, Some City",
 		country: "UK",
