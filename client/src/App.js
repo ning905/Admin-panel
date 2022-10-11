@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import { AuthContext } from "./context/AuthContext.js"
 import { DarkModeContext } from "./context/darkModeContext.js"
-import { productInputs, userInputs } from "./formSource.js"
+import { productInputs, userInputs } from "./utils/formSource.js"
 import Home from "./pages/home/Home.jsx"
 import List from "./pages/list/List.jsx"
 import Login from "./pages/login/Login.jsx"
@@ -32,34 +32,34 @@ function App() {
 						<Route
 							index
 							element={
-								<RequireAuth>
-									<Home />
-								</RequireAuth>
+								// <RequireAuth>
+								<Home />
+								// </RequireAuth>
 							}
 						/>
 						<Route path="users">
 							<Route
 								index
 								element={
-									<RequireAuth>
-										<List title="Add New User" />
-									</RequireAuth>
+									// <RequireAuth>
+									<List title="Add New User" />
+									// </RequireAuth>
 								}
 							/>
 							<Route
 								path=":userId"
 								element={
-									<RequireAuth>
-										<Single />
-									</RequireAuth>
+									// <RequireAuth>
+									<Single />
+									// </RequireAuth>
 								}
 							/>
 							<Route
 								path="new"
 								element={
-									<RequireAuth>
-										<New inputs={userInputs} title="Add New User" />
-									</RequireAuth>
+									// <RequireAuth>
+									<New inputs={userInputs} title="Add New User" />
+									// </RequireAuth>
 								}
 							/>
 						</Route>
@@ -67,17 +67,17 @@ function App() {
 							<Route
 								index
 								element={
-									<RequireAuth>
-										<List title="Add New Product" />
-									</RequireAuth>
+									// <RequireAuth>
+									<List title="Add New Product" />
+									// </RequireAuth>
 								}
 							/>
 							<Route
 								path=":productId"
 								element={
-									<RequireAuth>
-										<Single />
-									</RequireAuth>
+									// <RequireAuth>
+									<Single />
+									// </RequireAuth>
 								}
 							/>
 							<Route

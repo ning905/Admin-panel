@@ -1,12 +1,8 @@
 import "./new.scss"
 import { DriveFolderUploadOutlined } from "@mui/icons-material"
-import { doc, serverTimestamp, setDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import Navbar from "../../components/navbar/Navbar.jsx"
 import Sidebar from "../../components/sidebar/Sidebar.jsx"
-import { auth, db, storage } from "../../firebase.js"
-import { createUserWithEmailAndPassword } from "firebase/auth"
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 import { useNavigate } from "react-router-dom"
 
 export default function New({ inputs, title }) {
@@ -15,41 +11,7 @@ export default function New({ inputs, title }) {
 	const [perc, setPerc] = useState(null)
 	const navigate = useNavigate()
 
-	useEffect(() => {
-		function uploadFile() {
-			const name = new Date().getTime() + file.name
-			const storageRef = ref(storage, name)
-			const uploadTask = uploadBytesResumable(storageRef, file)
-
-			uploadTask.on(
-				"state_changed",
-				(snapshot) => {
-					const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-					setPerc(progress)
-					console.log("Upload is " + progress + "% done")
-					switch (snapshot.state) {
-						case "paused":
-							console.log("Upload is paused")
-							break
-						case "running":
-							console.log("Upload is running")
-							break
-						default:
-							break
-					}
-				},
-				(error) => {
-					console.error(error)
-				},
-				() => {
-					getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-						setData((data) => ({ ...data, img: downloadURL }))
-					})
-				}
-			)
-		}
-		file && uploadFile()
-	}, [file])
+	useEffect(() => {}, [file])
 
 	function handleInputs(e) {
 		const { name, value } = e.target
@@ -58,21 +20,6 @@ export default function New({ inputs, title }) {
 
 	async function handleAddNew(e) {
 		e.preventDefault()
-
-		try {
-			const { user } = await createUserWithEmailAndPassword(
-				auth,
-				data.email,
-				data.password
-			)
-			await setDoc(doc(db, "users", user.uid), {
-				...data,
-				timeStamp: serverTimestamp(),
-			})
-			navigate(-1)
-		} catch (err) {
-			console.error(err)
-		}
 	}
 
 	return (
