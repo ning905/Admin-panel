@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client")
-const bcrypt = require("bcrypt")
+import { PrismaClient } from "@prisma/client"
+import bcrypt from "bcrypt"
 
 const prisma = new PrismaClient()
 
@@ -64,6 +64,7 @@ async function main() {
 			category: "electronics",
 		},
 	]
+	const customers = ["John Smith", "Michael Doe", "Jane Smith", "Harold Carol"]
 
 	const createdAdmin = await prisma.user.create({
 		data: {
@@ -124,7 +125,8 @@ async function main() {
 		amount,
 		paymentMethod,
 		status,
-		userId,
+		customer,
+		sellerId,
 		productId
 	) {
 		const transaction = await prisma.transaction.create({
@@ -132,7 +134,8 @@ async function main() {
 				amount,
 				paymentMethod,
 				status,
-				userId,
+				customer,
+				sellerId,
 				productId,
 			},
 		})
@@ -160,20 +163,23 @@ async function main() {
 		)
 		products.push(newProduct)
 	}
-
+	console.log("products: ", products.length)
 	async function createTransactionsForUsers() {
 		let paymentMethod = "ONLINE"
 		let status = "PENDING"
 
-		for (let i = 1; i < 6; i++) {
+		for (let i = 1; i < users.length; i++) {
 			const amount = Math.ceil(Math.random() * 30)
+			const index = Math.floor((i - 1) / 2)
+			let product = products[index]
+			let customer = customers[Math.floor(index / 1.2)]
 
-			if (i > 3) {
-				paymentMethod = "CASH_ON_DELIVERY"
+			if (i > 4) {
 				status = "APPROVED"
 			}
 
-			if (i > 4) {
+			if (i > 7) {
+				paymentMethod = "CASH_ON_DELIVERY"
 				status = "CANCELLED"
 			}
 
@@ -181,8 +187,9 @@ async function main() {
 				amount,
 				paymentMethod,
 				status,
+				customer,
 				users[i].id,
-				products[i - 1].id
+				product.id
 			)
 			transactions.push(newTransaction)
 		}
