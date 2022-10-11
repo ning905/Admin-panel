@@ -1,10 +1,15 @@
 import { useContext, useState } from "react"
 import "./login.scss"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/AuthContext"
+import Box from "@mui/material/Box"
+import TextField from "@mui/material/TextField"
+import client from "../../utils/client"
+
+const tokenKey = process.env.REACT_APP_USER_TOKEN
 
 export default function Login() {
-	const [error, setError] = useState(false)
+	const [error, setError] = useState("")
 	const [inputs, setInputs] = useState({ email: "", password: "" })
 	const navigate = useNavigate()
 	const { dispatch } = useContext(AuthContext)
@@ -14,30 +19,56 @@ export default function Login() {
 		setInputs({ ...inputs, [name]: value })
 	}
 
-	function handleLogin(e) {
+	async function handleLogin(e) {
 		e.preventDefault()
+
+		try {
+			const response = await client.post("/users/login", inputs)
+			const token = response.data.data
+			localStorage.setItem(tokenKey, token)
+			dispatch({ type: "LOGIN", payload: token })
+			navigate("/")
+		} catch (err) {
+			setError(err.response.data.message)
+		}
 	}
 
 	return (
 		<div className="login">
-			<form onSubmit={handleLogin}>
-				<input
+			<h1>Welcome to the admin panel</h1>
+			<h2>Please login</h2>
+			<Box
+				className="box"
+				component="form"
+				sx={{
+					"& > :not(style)": { m: 1, width: "30ch" },
+				}}
+				noValidate
+				autoComplete="off"
+				onSubmit={handleLogin}
+			>
+				<TextField
+					variant="outlined"
+					label="Email"
 					type="email"
-					placeholder="Email"
 					name="email"
 					value={inputs.email}
 					onChange={handleInput}
 				/>
-				<input
+				<TextField
+					variant="outlined"
+					label="Password"
 					type="password"
-					placeholder="password"
 					name="password"
 					value={inputs.password}
 					onChange={handleInput}
 				/>
 				<button type="submit">Login</button>
-				{error && <span>Wrong email or password!</span>}
-			</form>
+			</Box>
+			{error && <span>{error}</span>}
+			<p>
+				Not have an account yet? Sign up <Link>here</Link>
+			</p>
 		</div>
 	)
 }
