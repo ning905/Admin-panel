@@ -159,11 +159,11 @@ async function main() {
 			data.category,
 			data.price,
 			data.stock,
-			data.imgUrl
+			data.img
 		)
 		products.push(newProduct)
 	}
-	console.log("products: ", products.length)
+
 	async function createTransactionsForUsers() {
 		let paymentMethod = "ONLINE"
 		let status = "PENDING"
