@@ -2,7 +2,7 @@ import "./single.scss"
 import Navbar from "../../components/navbar/Navbar.jsx"
 import Sidebar from "../../components/sidebar/Sidebar.jsx"
 import Chart from "../../components/chart/Chart.jsx"
-import RevenueTable from "../../components/revenueTable/RevenueTable.jsx"
+import TransactionTable from "../../components/transactionTable/TransactionTable.jsx"
 
 export default function Single() {
 	return (
@@ -48,7 +48,7 @@ export default function Single() {
 				<div className="bottom">
 					<h1 className="title">Last Transactions</h1>
 
-					<RevenueTable />
+					<TransactionTable />
 				</div>
 			</div>
 		</div>

@@ -2,7 +2,7 @@ import Chart from "../../components/chart/Chart.jsx"
 import Featured from "../../components/featured/Featured.jsx"
 import Navbar from "../../components/navbar/Navbar.jsx"
 import Sidebar from "../../components/sidebar/Sidebar.jsx"
-import RevenueTable from "../../components/revenueTable/RevenueTable.jsx"
+import TransactionTable from "../../components/transactionTable/TransactionTable.jsx"
 import Widget from "../../components/widget/Widget.jsx"
 import "./home.scss"
 
@@ -24,7 +24,7 @@ export default function Home() {
 				</div>
 				<div className="list-container">
 					<div className="list-title">Latest Transactions</div>
-					<RevenueTable />
+					<TransactionTable />
 				</div>
 			</div>
 		</div>
