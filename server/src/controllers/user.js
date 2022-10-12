@@ -3,6 +3,7 @@ import {
 	BadRequestError,
 	InternalServerError,
 	InvalidLoginError,
+	NotFoundError,
 	ServerConflictError,
 } from "../utils/Error.js"
 import {
@@ -79,6 +80,42 @@ export async function signUp(req, res) {
 
 		const token = generateJwt(createdUser.username)
 		return sendDataResponse(res, 200, token)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
+export async function getAllUsers(req, res) {}
+
+export async function getUserByUsername(req, res) {
+	const { username } = req.params
+
+	try {
+		const foundUser = await dbClient.user.findUnique({
+			where: { username },
+			select: {
+				email: true,
+				username: true,
+				role: true,
+				profile: {
+					select: {
+						fullName: true,
+						phone: true,
+						address: true,
+						country: true,
+						imgUrl: true,
+					},
+				},
+			},
+		})
+
+		if (!foundUser) {
+			const notFound = new NotFoundError("user", "username")
+			return sendMessageResponse(res, notFound.code, notFound.message)
+		}
+
+		sendDataResponse(res, 200, foundUser)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err

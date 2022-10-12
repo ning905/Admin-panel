@@ -26,10 +26,10 @@ export class InvalidLoginError {
 	}
 }
 
-export class NotFoundByIdError {
-	constructor(target) {
+export class NotFoundError {
+	constructor(target, info) {
 		this.code = 404
-		this.message = `The ${target} with the provided id does not exist`
+		this.message = `The ${target} with the provided ${info} does not exist`
 	}
 }
 
