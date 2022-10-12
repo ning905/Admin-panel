@@ -1,6 +1,7 @@
 import { createContext, useEffect, useReducer, useState } from "react"
 import AuthReducer from "./AuthReducer"
 import jwt_decode from "jwt-decode"
+import client from "../utils/client"
 
 const tokenKey = process.env.REACT_APP_USER_TOKEN
 const INITIAL_TOKEN = {
@@ -14,9 +15,18 @@ export const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState(null)
 
 	useEffect(() => {
+		async function getCurrentUser(username) {
+			try {
+				const response = await client.get(`/users/${username}`)
+				setUser(response.data.data)
+			} catch (error) {
+				console.error(error)
+			}
+		}
+
 		if (state.token) {
 			const username = jwt_decode(state.token).username
-			setUser({ username })
+			getCurrentUser(username)
 		}
 	}, [state.token])
 
