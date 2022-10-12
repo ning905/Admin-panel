@@ -6,12 +6,13 @@ import FullscreenExitOutlinedIcon from "@mui/icons-material/FullscreenExitOutlin
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined"
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined"
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined"
-import avatar from "../../assets/img/avatar.jpg"
 import { useContext } from "react"
 import { DarkModeContext } from "../../context/darkModeContext.js"
+import { AuthContext } from "../../context/AuthContext"
 
 export default function Navbar() {
 	const { dispatch } = useContext(DarkModeContext)
+	const { currentUser } = useContext(AuthContext)
 
 	return (
 		<nav className="navbar">
@@ -47,7 +48,7 @@ export default function Navbar() {
 						<ListOutlinedIcon className="icon" />
 					</li>
 					<li className="item">
-						<img src={avatar} alt="avatar" className="avatar" />
+						<img src={currentUser.profile.imgUrl} alt="avatar" className="avatar" />
 					</li>
 				</ul>
 			</div>
