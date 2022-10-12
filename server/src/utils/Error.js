@@ -5,6 +5,20 @@ export class BadRequestError {
 	}
 }
 
+export class InvalidAuthError {
+	constructor(message = "Unable to verify user") {
+		this.code = 401
+		this.message = message
+	}
+}
+
+export class NoAccessError {
+	constructor(message = "You do not access to this content") {
+		this.code = 403
+		this.message = message
+	}
+}
+
 export class InvalidLoginError {
 	constructor() {
 		this.code = 404
