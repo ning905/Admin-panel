@@ -11,14 +11,21 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone"
 import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSystemDaydreamOutlined"
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined"
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { DarkModeContext } from "../../context/darkModeContext.js"
 import { AuthContext } from "../../context/AuthContext"
 
 export default function Sidebar() {
 	const { dispatch } = useContext(DarkModeContext)
-	const { currentUser } = useContext(AuthContext)
+	const { currentUser, userAction } = useContext(AuthContext)
+	const navigate = useNavigate()
+
+	function handleLogout() {
+		userAction({ type: "LOGOUT" })
+		localStorage.removeItem(process.env.REACT_APP_USER_TOKEN)
+		navigate("/login")
+	}
 
 	return (
 		<aside className="sidebar">
@@ -38,7 +45,7 @@ export default function Sidebar() {
 
 					<p className="title">LISTS</p>
 
-					{currentUser.role === "ADMIN" && (
+					{currentUser?.role === "ADMIN" && (
 						<Link to="/users" style={{ textDecoration: "none" }}>
 							<li>
 								<PersonOutlineIcon className="icon" />
@@ -93,7 +100,7 @@ export default function Sidebar() {
 						<AccountCircleOutlinedIcon className="icon" />
 						<span>Profile</span>
 					</li>
-					<li>
+					<li onClick={handleLogout}>
 						<ExitToAppIcon className="icon" />
 						<span>Logout</span>
 					</li>

@@ -26,7 +26,9 @@ function App() {
 	console.log("currentUser", currentUser)
 
 	function RequireAdmin({ children }) {
-		return currentUser.role === "ADMIN" ? children : <Navigate to="/" />
+		if (currentUser) {
+			return currentUser.role === "ADMIN" ? children : <Navigate to="/" />
+		}
 	}
 
 	return (

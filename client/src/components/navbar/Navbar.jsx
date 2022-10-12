@@ -48,7 +48,7 @@ export default function Navbar() {
 						<ListOutlinedIcon className="icon" />
 					</li>
 					<li className="item">
-						<img src={currentUser.profile.imgUrl} alt="avatar" className="avatar" />
+						<img src={currentUser?.profile.imgUrl} alt="avatar" className="avatar" />
 					</li>
 				</ul>
 			</div>
