@@ -24,6 +24,11 @@ function App() {
 		return currentUser ? children : <Navigate to="/login" />
 	}
 	console.log("currentUser", currentUser)
+
+	function RequireAdmin({ children }) {
+		return currentUser.role === "ADMIN" ? children : <Navigate to="/" />
+	}
+
 	return (
 		<div className={appClass}>
 			<BrowserRouter>
@@ -44,25 +49,31 @@ function App() {
 							<Route
 								index
 								element={
-									// <RequireAuth>
-									<List title="Add New User" />
-									// </RequireAuth>
+									<RequireAuth>
+										<RequireAdmin>
+											<List title="Add New User" />
+										</RequireAdmin>
+									</RequireAuth>
 								}
 							/>
 							<Route
 								path=":userId"
 								element={
-									// <RequireAuth>
-									<Single />
-									// </RequireAuth>
+									<RequireAuth>
+										<RequireAdmin>
+											<Single />
+										</RequireAdmin>
+									</RequireAuth>
 								}
 							/>
 							<Route
 								path="new"
 								element={
-									// <RequireAuth>
-									<New inputs={userInputs} title="Add New User" />
-									// </RequireAuth>
+									<RequireAuth>
+										<RequireAdmin>
+											<New inputs={userInputs} title="Add New User" />
+										</RequireAdmin>
+									</RequireAuth>
 								}
 							/>
 						</Route>
@@ -70,25 +81,25 @@ function App() {
 							<Route
 								index
 								element={
-									// <RequireAuth>
-									<List title="Add New Product" />
-									// </RequireAuth>
+									<RequireAuth>
+										<List title="Add New Product" />
+									</RequireAuth>
 								}
 							/>
 							<Route
 								path=":productId"
 								element={
-									// <RequireAuth>
-									<Single />
-									// </RequireAuth>
+									<RequireAuth>
+										<Single />
+									</RequireAuth>
 								}
 							/>
 							<Route
 								path="new"
 								element={
-									// <RequireAuth>
-									<New inputs={productInputs} title="Add New Product" />
-									// </RequireAuth>
+									<RequireAuth>
+										<New inputs={productInputs} title="Add New Product" />
+									</RequireAuth>
 								}
 							/>
 						</Route>

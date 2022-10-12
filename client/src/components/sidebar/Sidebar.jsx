@@ -14,9 +14,11 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import { Link } from "react-router-dom"
 import { useContext } from "react"
 import { DarkModeContext } from "../../context/darkModeContext.js"
+import { AuthContext } from "../../context/AuthContext"
 
 export default function Sidebar() {
 	const { dispatch } = useContext(DarkModeContext)
+	const { currentUser } = useContext(AuthContext)
 
 	return (
 		<aside className="sidebar">
@@ -36,12 +38,14 @@ export default function Sidebar() {
 
 					<p className="title">LISTS</p>
 
-					<Link to="/users" style={{ textDecoration: "none" }}>
-						<li>
-							<PersonOutlineIcon className="icon" />
-							<span>Users</span>
-						</li>
-					</Link>
+					{currentUser.role === "ADMIN" && (
+						<Link to="/users" style={{ textDecoration: "none" }}>
+							<li>
+								<PersonOutlineIcon className="icon" />
+								<span>Users</span>
+							</li>
+						</Link>
+					)}
 
 					<Link to="/products" style={{ textDecoration: "none" }}>
 						<li>
