@@ -33,33 +33,33 @@ async function main() {
 			category: "electronics",
 			img: "https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_UY327_FMwebp_QL65_.jpg",
 			price: "678.98",
-			stock: 785,
+			stock: 30,
 		},
 		{
 			title: "Playstation 5",
 			img: "https://m.media-amazon.com/images/I/31JaiPXYI8L._AC_UY327_FMwebp_QL65_.jpg",
-			stock: 900,
+			stock: 35,
 			price: "681",
 			category: "electronics",
 		},
 		{
 			title: "Redragon S101",
 			img: "https://m.media-amazon.com/images/I/71kr3WAj1FL._AC_UY327_FMwebp_QL65_.jpg",
-			stock: 35,
+			stock: 55,
 			price: "47.99",
 			category: "electronics",
 		},
 		{
 			title: "Razer Blade 15",
 			img: "https://m.media-amazon.com/images/I/71wF7YDIQkL._AC_UY327_FMwebp_QL65_.jpg",
-			stock: 920,
+			stock: 30,
 			price: "1555.65",
 			category: "electronics",
 		},
 		{
 			title: "ASUS ROG Strix",
 			img: "https://m.media-amazon.com/images/I/81hH5vK-MCL._AC_UY327_FMwebp_QL65_.jpg",
-			stock: 2000,
+			stock: 40,
 			price: "1959.99",
 			category: "electronics",
 		},
@@ -107,7 +107,7 @@ async function main() {
 		return user
 	}
 
-	async function createProduct(title, category, price, stock, imgUrl) {
+	async function createProduct(title, category, price, stock, imgUrl, sellerId) {
 		const product = await prisma.product.create({
 			data: {
 				title,
@@ -116,6 +116,7 @@ async function main() {
 				price,
 				stock,
 				imgUrl,
+				sellerId,
 			},
 		})
 		return product
@@ -126,7 +127,6 @@ async function main() {
 		paymentMethod,
 		status,
 		customer,
-		sellerId,
 		productId
 	) {
 		const transaction = await prisma.transaction.create({
@@ -135,7 +135,6 @@ async function main() {
 				paymentMethod,
 				status,
 				customer,
-				sellerId,
 				productId,
 			},
 		})
@@ -159,7 +158,8 @@ async function main() {
 			data.category,
 			data.price,
 			data.stock,
-			data.img
+			data.img,
+			users[i].id
 		)
 		products.push(newProduct)
 	}
@@ -169,10 +169,11 @@ async function main() {
 		let status = "PENDING"
 
 		for (let i = 1; i < users.length; i++) {
-			const amount = Math.ceil(Math.random() * 30)
+			let amount = Math.ceil(Math.random() * 20)
 			const index = Math.floor((i - 1) / 2)
 			let product = products[index]
 			let customer = customers[Math.floor(index / 1.2)]
+			let newTransaction
 
 			if (i > 4) {
 				status = "APPROVED"
@@ -183,15 +184,30 @@ async function main() {
 				status = "CANCELLED"
 			}
 
-			const newTransaction = await createTransaction(
-				amount,
-				paymentMethod,
-				status,
-				customer,
-				users[i].id,
-				product.id
-			)
-			transactions.push(newTransaction)
+			if (amount > product.stock) {
+				amount = product.stock
+			}
+
+			if (amount > 0) {
+				newTransaction = await createTransaction(
+					amount,
+					paymentMethod,
+					status,
+					customer,
+					product.id
+				)
+			}
+
+			if (newTransaction) {
+				const updatedProduct = await prisma.product.update({
+					where: { id: product.id },
+					data: {
+						stock: product.stock - amount,
+					},
+				})
+				products.splice(index, 1, updatedProduct)
+				transactions.push(newTransaction)
+			}
 		}
 	}
 

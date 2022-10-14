@@ -17,15 +17,15 @@ enum Role {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  username     String        @unique
-  password     String        @db.VarChar(250)
-  role         Role          @default(USER)
-  profile      Profile?
-  transactions Transaction[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime?     @updatedAt
+  id        String    @id @default(uuid())
+  email     String    @unique
+  username  String    @unique
+  password  String    @db.VarChar(250)
+  role      Role      @default(USER)
+  profile   Profile?
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Profile {
@@ -49,6 +49,8 @@ model Product {
   price        String
   stock        Int
   imgUrl       String        @default("https://www.4me.com/wp-content/uploads/2018/01/4me-icon-product.png")
+  sellerId     String
+  seller       User          @relation(fields: [sellerId], references: [id])
   transactions Transaction[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime?     @updatedAt
@@ -71,8 +73,6 @@ model Transaction {
   paymentMethod PaymenMethod @default(ONLINE)
   status        Status       @default(PENDING)
   customer      String
-  sellerId      String
-  seller        User         @relation(fields: [sellerId], references: [id])
   productId     String
   product       Product      @relation(fields: [productId], references: [id])
   createdAt     DateTime     @default(now())
