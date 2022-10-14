@@ -5,11 +5,16 @@
 	.data-table-title {
 		width: 100%;
 		font-size: 24px;
-		color: gray;
+		color: #6439ff;
 		margin-bottom: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+
+		span {
+			font-size: 1rem;
+			color: red;
+		}
 
 		.link {
 			text-decoration: none;
@@ -80,6 +85,15 @@
 			padding: 2px 5px;
 			border-radius: 5px;
 			color: crimson;
+			border: 1px dotted rgba(220, 20, 60, 0.4);
+			cursor: pointer;
+		}
+
+		.delete-button.confirm {
+			padding: 2px 5px;
+			border-radius: 5px;
+			color: white;
+			background-color: rgba(220, 20, 60, 0.791);
 			border: 1px dotted rgba(220, 20, 60, 0.4);
 			cursor: pointer;
 		}
