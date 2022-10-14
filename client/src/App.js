@@ -23,7 +23,6 @@ function App() {
 	function RequireAuth({ children }) {
 		return currentUser ? children : <Navigate to="/login" />
 	}
-	console.log("currentUser", currentUser)
 
 	function RequireAdmin({ children }) {
 		if (currentUser) {
