@@ -56,3 +56,17 @@ export async function validateAuthentication(req, res, next) {
 	req.user = foundUser
 	next()
 }
+
+export function validateAdmin(req, res, next) {
+	if (!req.user) {
+		const error = new InvalidAuthError("Invalid user")
+		return sendMessageResponse(res, error.code, error.message)
+	}
+
+	if (req.user.role !== "ADMIN") {
+		const noAccess = new NoAccessError("Only admins can access")
+		return sendMessageResponse(res, noAccess.code, noAccess.message)
+	}
+
+	next()
+}
