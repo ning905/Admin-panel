@@ -12,7 +12,7 @@ export default function SignUp() {
 	const [error, setError] = useState("")
 	const [inputs, setInputs] = useState({})
 	const navigate = useNavigate()
-	const { dispatch } = useContext(AuthContext)
+	const { userAction } = useContext(AuthContext)
 
 	function handleInput(e) {
 		const { name, value } = e.target
@@ -22,15 +22,15 @@ export default function SignUp() {
 	async function handleSignUp(e) {
 		e.preventDefault()
 
-		try {
-			const response = await client.post("/users/signup", inputs)
-			const token = response.data.data
-			localStorage.setItem(tokenKey, token)
-			dispatch({ type: "LOGIN", payload: token })
-			navigate("/")
-		} catch (err) {
-			setError(err.response.data.message)
-		}
+		client
+			.post("/users/signup", inputs)
+			.then((res) => {
+				const token = res.data.data.token
+				localStorage.setItem(tokenKey, token)
+				userAction({ type: "LOGIN", payload: res.data.data.user })
+				navigate("/")
+			})
+			.catch((err) => setError(err.response.data.message))
 	}
 
 	return (

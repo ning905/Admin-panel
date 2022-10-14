@@ -12,7 +12,7 @@ export default function Login() {
 	const [error, setError] = useState("")
 	const [inputs, setInputs] = useState({ email: "", password: "" })
 	const navigate = useNavigate()
-	const { dispatch } = useContext(AuthContext)
+	const { userAction } = useContext(AuthContext)
 
 	function handleInput(e) {
 		const { name, value } = e.target
@@ -22,15 +22,15 @@ export default function Login() {
 	async function handleLogin(e) {
 		e.preventDefault()
 
-		try {
-			const response = await client.post("/users/login", inputs)
-			const token = response.data.data
-			localStorage.setItem(tokenKey, token)
-			dispatch({ type: "LOGIN", payload: token })
-			navigate("/")
-		} catch (err) {
-			setError(err.response.data.message)
-		}
+		client
+			.post("/users/login", inputs)
+			.then((res) => {
+				const token = res.data.data.token
+				localStorage.setItem(tokenKey, token)
+				userAction({ type: "LOGIN", payload: res.data.data.user })
+				navigate("/")
+			})
+			.catch((err) => setError(err.response.data.message))
 	}
 
 	return (

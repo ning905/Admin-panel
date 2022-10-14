@@ -4,35 +4,31 @@ import jwt_decode from "jwt-decode"
 import client from "../utils/client"
 
 const tokenKey = process.env.REACT_APP_USER_TOKEN
-const INITIAL_TOKEN = {
-	token: localStorage.getItem(tokenKey) || null,
-}
+const token = localStorage.getItem(tokenKey) || null
 
-export const AuthContext = createContext(INITIAL_TOKEN)
+const INITIAL_USER = null
+export const AuthContext = createContext(INITIAL_USER)
 
 export const AuthContextProvider = ({ children }) => {
-	const [state, dispatch] = useReducer(AuthReducer, INITIAL_TOKEN)
-	const [user, setUser] = useState(null)
+	const [state, dispatch] = useReducer(AuthReducer, { user: INITIAL_USER })
 
 	useEffect(() => {
-		async function getCurrentUser(username) {
-			try {
-				const response = await client.get(`/users/${username}`)
-				setUser(response.data.data)
-			} catch (error) {
-				console.error(error)
-			}
+		if (token) {
+			const username = jwt_decode(token).username
+			client
+				.get(`/users/${username}`)
+				.then((res) => dispatch({ type: "LOGIN", payload: res.data.data }))
+				.catch((err) => console.error(err))
 		}
-
-		if (state.token) {
-			const username = jwt_decode(state.token).username
-			getCurrentUser(username)
-		}
-	}, [state.token])
+	}, [])
 
 	return (
-		<AuthContext.Provider value={{ currentUser: user, dispatch }}>
-			{children}
-		</AuthContext.Provider>
+		(!token || state.user) && (
+			<AuthContext.Provider
+				value={{ currentUser: state.user, userAction: dispatch }}
+			>
+				{children}
+			</AuthContext.Provider>
+		)
 	)
 }
