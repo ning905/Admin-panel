@@ -12,16 +12,12 @@ import { format } from "date-fns"
 
 export default function TransactionTable() {
 	const [rows, setRows] = useState([])
+
 	useEffect(() => {
-		async function getTransactions() {
-			try {
-				const response = await client.get("/transactions")
-				setRows(response.data.data)
-			} catch (err) {
-				console.error(err)
-			}
-		}
-		getTransactions()
+		client
+			.get("/transactions")
+			.then((res) => setRows(res.data.data))
+			.catch((err) => console.error(err))
 	}, [])
 
 	function formatTime(timeStr) {
