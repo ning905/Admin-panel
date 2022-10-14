@@ -3,6 +3,7 @@ import {
 	BadRequestError,
 	InternalServerError,
 	InvalidLoginError,
+	NoAccessError,
 	NotFoundError,
 	ServerConflictError,
 } from "../utils/Error.js"
@@ -26,7 +27,24 @@ export async function login(req, res) {
 
 	try {
 		const invalidLogin = new InvalidLoginError()
-		const foundUser = await dbClient.user.findUnique({ where: { email } })
+		const foundUser = await dbClient.user.findUnique({
+			where: { email },
+			select: {
+				email: true,
+				username: true,
+				password: true,
+				role: true,
+				profile: {
+					select: {
+						fullName: true,
+						phone: true,
+						address: true,
+						country: true,
+						imgUrl: true,
+					},
+				},
+			},
+		})
 		if (!foundUser) {
 			return sendMessageResponse(res, invalidLogin.code, invalidLogin.message)
 		}
@@ -37,7 +55,9 @@ export async function login(req, res) {
 		}
 
 		const token = generateJwt(foundUser.username)
-		return sendDataResponse(res, 200, token)
+		delete foundUser.password
+
+		return sendDataResponse(res, 200, { token, user: foundUser })
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
@@ -76,17 +96,58 @@ export async function signUp(req, res) {
 					},
 				},
 			},
+			select: {
+				email: true,
+				username: true,
+				role: true,
+				profile: {
+					select: {
+						fullName: true,
+						phone: true,
+					},
+				},
+			},
 		})
 
 		const token = generateJwt(createdUser.username)
-		return sendDataResponse(res, 200, token)
+		return sendDataResponse(res, 200, { token, user: createdUser })
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
 	}
 }
 
-export async function getAllUsers(req, res) {}
+export async function getAllUsers(req, res) {
+	if (req.user.role !== "ADMIN") {
+		const noAccess = new NoAccessError("Only admins can access")
+		return sendMessageResponse(res, noAccess.code, noAccess.message)
+	}
+
+	try {
+		const users = await dbClient.user.findMany({
+			select: {
+				id: true,
+				email: true,
+				username: true,
+				role: true,
+				profile: {
+					select: {
+						fullName: true,
+						phone: true,
+						address: true,
+						country: true,
+						imgUrl: true,
+					},
+				},
+			},
+		})
+
+		sendDataResponse(res, 200, users)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
 
 export async function getUserByUsername(req, res) {
 	const { username } = req.params

@@ -7,29 +7,25 @@ import {
 
 const serverError = new InternalServerError()
 
-export async function getAllTransactionsForUser(req, res) {
+export async function getAllProductsForUser(req, res) {
 	const query = {
-		skip: 0,
-		take: 100,
 		orderBy: {
 			createdAt: "desc",
 		},
 		include: {
-			product: true,
+			transactions: true,
 		},
 	}
 
 	if (req.user.role !== "ADMIN") {
 		query.where = {
-			product: {
-				sellerId: req.user.id,
-			},
+			sellerId: req.user.id,
 		}
 	}
 
 	try {
-		const transactions = await dbClient.transaction.findMany(query)
-		sendDataResponse(res, 200, transactions)
+		const products = await dbClient.product.findMany(query)
+		sendDataResponse(res, 200, products)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
