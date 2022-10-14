@@ -142,7 +142,7 @@ export async function getAllUsers(req, res) {
 			},
 		})
 
-		sendDataResponse(res, 200, users)
+		return sendDataResponse(res, 200, users)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
@@ -176,7 +176,29 @@ export async function getUserByUsername(req, res) {
 			return sendMessageResponse(res, notFound.code, notFound.message)
 		}
 
-		sendDataResponse(res, 200, foundUser)
+		return sendDataResponse(res, 200, foundUser)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
+export async function deleteUserById(req, res) {
+	if (req.user.role !== "ADMIN") {
+		const noAccess = new NoAccessError("Only admins can access")
+		return sendMessageResponse(res, noAccess.code, noAccess.message)
+	}
+
+	const id = req.params.id
+	const foundUser = await dbClient.user.findUnique({ where: { id } })
+	if (!foundUser) {
+		const notFound = new NotFoundError("user", "id")
+		return sendMessageResponse(res, notFound.code, notFound.message)
+	}
+
+	try {
+		const deletedUser = await dbClient.user.delete({ where: { id } })
+		return sendDataResponse(res, 200, deletedUser)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err

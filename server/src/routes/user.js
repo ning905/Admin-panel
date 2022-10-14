@@ -1,5 +1,6 @@
 import { Router } from "express"
 import {
+	deleteUserById,
 	getAllUsers,
 	getUserByUsername,
 	login,
@@ -14,5 +15,7 @@ router.post("/signup", signUp)
 
 router.get("/", validateAuthentication, validateAdmin, getAllUsers)
 router.get("/:username", validateAuthentication, getUserByUsername)
+
+router.delete("/:id", validateAuthentication, validateAdmin, deleteUserById)
 
 export default router
