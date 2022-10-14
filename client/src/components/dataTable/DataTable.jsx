@@ -1,23 +1,52 @@
 import "./dataTable.scss"
 import { DataGrid } from "@mui/x-data-grid"
-import { userColumns } from "../../utils/dataTableSource.js"
-import { Link } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { productColumns, userColumns } from "../../utils/dataTableSource.js"
+import { Link, useLocation } from "react-router-dom"
+import { useContext, useEffect, useState } from "react"
+import client from "../../utils/client"
+import { AuthContext } from "../../context/AuthContext"
 
 export default function DataTable() {
 	const [data, setData] = useState([])
+	const [columns, setColumns] = useState([])
+	const { currentUser } = useContext(AuthContext)
+	const location = useLocation()
+	console.log("location: ", location)
+	console.log("currentUser: ", currentUser)
 
-	useEffect(() => {}, [])
+	useEffect(() => {
+		if (location.pathname === "/products") {
+			setColumns(productColumns)
+		} else if (location.pathname === "/users") {
+			setColumns(userColumns)
+		}
 
+		if (
+			location.pathname === "/products" ||
+			(location.pathname === "/users" && currentUser.role === "ADMIN")
+		) {
+			client
+				.get(location.pathname)
+				.then((res) => {
+					console.log("response data: ", res.data.data)
+					setData(res.data.data)
+				})
+				.catch((err) => console.error(err))
+		}
+	}, [])
+
+	console.log("data", data)
 	async function handleDelete(id) {}
 
 	const actionColumn = {
 		field: "action",
 		headerName: "Action",
 		width: 200,
+		headerAlign: "center",
+		align: "center",
 		renderCell: (params) => {
 			return (
-				<div className="cell-action">
+				<div className="data-cell cell-action">
 					<Link to="/users/test" style={{ textDecoration: "none" }}>
 						<div className="view-button">View</div>
 					</Link>
@@ -30,18 +59,21 @@ export default function DataTable() {
 		},
 	}
 
+	console.log("columns: ", userColumns)
 	return (
 		<div className="data-table">
 			<div className="data-table-title">
-				Add New User
-				<Link to="/users/new" className="link">
+				{location.pathname.charAt(1).toUpperCase() + location.pathname.slice(2, -1)}{" "}
+				list
+				<Link to={`${location.pathname}/new`} className="link">
 					Add New
 				</Link>
 			</div>
 			<DataGrid
 				className="data-grid"
 				rows={data}
-				columns={userColumns.concat(actionColumn)}
+				getRowId={(row) => row.id}
+				columns={columns.concat(actionColumn)}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
 				checkboxSelection

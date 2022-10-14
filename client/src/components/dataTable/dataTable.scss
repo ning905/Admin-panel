@@ -23,6 +23,12 @@
 		}
 	}
 
+	.data-cell {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
 	.cell-with-img {
 		display: flex;
 		align-items: center;
@@ -40,17 +46,18 @@
 		padding: 5px;
 		border-radius: 5px;
 
-		&.active {
+		&.In-stock {
 			color: green;
+			font-size: 1rem;
 			background-color: rgba(0, 128, 0, 0.05);
 		}
 
-		&.pending {
+		&.Low-stock {
 			color: goldenrod;
 			background-color: rgba(255, 217, 0, 0.05);
 		}
 
-		&.passive {
+		&.No-stock {
 			color: red;
 			background-color: rgba(255, 0, 0, 0.05);
 		}
