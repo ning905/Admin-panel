@@ -36,7 +36,7 @@ model Profile {
   country   String?
   imgUrl    String    @default("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png")
   userId    String    @unique
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -50,7 +50,7 @@ model Product {
   stock        Int
   imgUrl       String        @default("https://www.4me.com/wp-content/uploads/2018/01/4me-icon-product.png")
   sellerId     String
-  seller       User          @relation(fields: [sellerId], references: [id])
+  seller       User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime?     @updatedAt
@@ -74,7 +74,7 @@ model Transaction {
   status        Status       @default(PENDING)
   customer      String
   productId     String
-  product       Product      @relation(fields: [productId], references: [id])
+  product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime?    @updatedAt
 }
