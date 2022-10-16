@@ -8,60 +8,110 @@ import TextField from "@mui/material/TextField"
 import client from "../../utils/client"
 import { useLocation } from "react-router-dom"
 import { AuthContext } from "../../context/AuthContext"
-import { productInputs, userInit, userInputs } from "../../utils/formSource"
+import {
+	adminProductInput,
+	productInit,
+	productInputs,
+	userInit,
+	userInputs,
+} from "../../utils/formSource"
 
 export default function New() {
 	const [file, setFile] = useState("")
-	const [title, setTitle] = useState("")
-	const [inputFields, setInputFields] = useState([])
 	const [data, setData] = useState({})
 	const [alert, setAlert] = useState({})
+	const [page, setPage] = useState({
+		title: "",
+		inputFields: [],
+		initialData: {},
+	})
 
 	const { currentUser } = useContext(AuthContext)
 	const location = useLocation()
 
 	useEffect(() => {
 		if (location.pathname === "/products/new") {
-			setInputFields(productInputs)
-			setTitle("Product")
+			let inputFields = productInputs
+
+			if (currentUser.role === "ADMIN") {
+				inputFields = productInputs.concat(adminProductInput)
+			}
+
+			setPage({
+				title: "Product",
+				inputFields: inputFields,
+				initialData: productInit,
+			})
 		} else if (
 			location.pathname === "/users/new" &&
 			currentUser.role === "ADMIN"
 		) {
-			setInputFields(userInputs)
-			setTitle("User")
+			setPage({
+				title: "User",
+				inputFields: userInputs,
+				initialData: userInit,
+			})
 		}
 	}, [currentUser.role, location.pathname])
 
 	function handleUploadFile(e) {
-		console.log("files array: ", e.target.files)
-		setFile(e.target.files[0])
+		if (e.target.files[0].size / 1024 / 1024 > 2) {
+			setAlert({
+				status: "error",
+				message: "Image size cannot be larger than 2MB",
+			})
+
+			setTimeout(() => {
+				setAlert({})
+			}, "3000")
+		} else {
+			setFile(e.target.files[0])
+		}
+	}
+
+	function handleKeyDown(e) {
+		const invalidChars = ["-", "+", "e"]
+
+		if (
+			(e.target.name === "price" || e.target.name === "stock") &&
+			invalidChars.includes(e.key)
+		) {
+			e.preventDefault()
+		} else if (e.target.name === "stock" && e.key === ".") {
+			e.preventDefault()
+		} else if (e.target.name === "price" && e.target.value.includes(".")) {
+			const arr = e.target.value.split(".")
+			if (arr[1].length >= 2) {
+				e.preventDefault()
+			}
+		}
 	}
 
 	function handleInputs(e) {
 		const { name, value } = e.target
+
 		setData({ ...data, [name]: value })
 	}
-	console.log("data: ", data)
 
 	async function handleAddNew(e) {
 		e.preventDefault()
+		const body = { ...data }
+
+		if (file) {
+			body.imgUrl = URL.createObjectURL(file)
+		}
 
 		client
-			.post(location.pathname.slice(0, -4), {
-				...data,
-				imgUrl: URL.createObjectURL(file),
-			})
+			.post(location.pathname.slice(0, -4), body)
 			.then((res) => {
-				console.log("response: ", res)
 				setAlert({
 					status: "success",
-					message: title + " created",
+					message: page.title + " created",
 				})
 
 				setTimeout(() => {
 					setAlert({})
-					setData(userInit)
+					setData(page.initialData)
 					setFile("")
 				}, "3000")
 			})
@@ -84,7 +134,7 @@ export default function New() {
 				<Navbar />
 
 				<div className="top">
-					<h1>Add New {title}</h1>
+					<h1>Add New {page.title}</h1>
 				</div>
 
 				<div className="bottom">
@@ -126,13 +176,14 @@ export default function New() {
 							sx={{
 								"& > :not(style)": { m: 1, width: "30ch" },
 							}}
-							validate
 							autoComplete="off"
 							onSubmit={handleAddNew}
 						>
-							{inputFields.map((input) => (
+							{page.inputFields.map((input) => (
 								<TextField
 									required={input.required}
+									multiline={input.name === "description"}
+									maxRows={4}
 									variant="outlined"
 									label={input.label}
 									type={input.type}
@@ -141,6 +192,7 @@ export default function New() {
 									key={input.id}
 									className="form-input"
 									onChange={handleInputs}
+									onKeyDown={handleKeyDown}
 								/>
 							))}
 

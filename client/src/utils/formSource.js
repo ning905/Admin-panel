@@ -60,35 +60,60 @@ export const userInputs = [
 	},
 ]
 
+export const productInit = {
+	title: "",
+	description: "",
+	category: "",
+	price: "",
+	stock: "",
+	sellerUsername: "",
+}
+
 export const productInputs = [
 	{
 		id: 1,
 		label: "Title",
+		name: "title",
 		type: "text",
-		placeholder: "Apple Macbook Pro",
+		required: true,
 	},
 	{
 		id: 2,
 		label: "Description",
+		name: "description",
 		type: "text",
-		placeholder: "Description",
+		required: true,
 	},
 	{
 		id: 3,
 		label: "Category",
+		name: "category",
 		type: "text",
-		placeholder: "Computers",
+		required: true,
 	},
 	{
 		id: 4,
 		label: "Price",
-		type: "text",
-		placeholder: "100",
+		name: "price",
+		type: "number",
+		required: true,
+		step: ".01",
 	},
 	{
 		id: 5,
 		label: "Stock",
+		name: "stock",
+		type: "number",
+		required: true,
+	},
+]
+
+export const adminProductInput = [
+	{
+		id: 6,
+		label: "Seller Username",
+		name: "sellerUsername",
 		type: "text",
-		placeholder: "in stock",
+		required: true,
 	},
 ]
