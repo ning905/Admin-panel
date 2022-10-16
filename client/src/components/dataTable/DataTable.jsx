@@ -14,9 +14,6 @@ export default function DataTable() {
 	const { currentUser } = useContext(AuthContext)
 	const location = useLocation()
 
-	console.log("location: ", location)
-	console.log("currentUser: ", currentUser)
-
 	useEffect(() => {
 		if (location.pathname === "/products") {
 			setColumns(productColumns)
@@ -31,7 +28,6 @@ export default function DataTable() {
 			client
 				.get(location.pathname)
 				.then((res) => {
-					console.log("response data: ", res.data.data)
 					setData(res.data.data.map((row) => ({ ...row, deleteAction: false })))
 				})
 				.catch((err) => {
@@ -39,8 +35,6 @@ export default function DataTable() {
 				})
 		}
 	}, [currentUser.role, location.pathname])
-
-	console.log("data", data)
 
 	function handleConfirm(row) {
 		row.deleteAction = true
@@ -50,7 +44,6 @@ export default function DataTable() {
 		client
 			.delete(`${location.pathname}/${id}`)
 			.then((res) => {
-				console.log("response", res)
 				if (res.data.status === "success") {
 					setData((data) => data.filter((d) => d.id !== id))
 				}
@@ -95,7 +88,6 @@ export default function DataTable() {
 		},
 	}
 
-	console.log("columns: ", userColumns)
 	return (
 		<div className="data-table">
 			<div className="data-table-title">
