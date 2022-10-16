@@ -64,51 +64,68 @@ export async function login(req, res) {
 	}
 }
 
+async function createUserInDB(req, res) {
+	const {
+		email,
+		username,
+		password,
+		fullName,
+		phone,
+		address,
+		country,
+		imgUrl,
+	} = req.body
+
+	const foundByEmail = await dbClient.user.findUnique({ where: { email } })
+	const foundByUsername = await dbClient.user.findUnique({
+		where: { username },
+	})
+
+	if (foundByEmail) {
+		const emailInUse = new ServerConflictError("Email already in use")
+		sendMessageResponse(res, emailInUse.code, emailInUse.message)
+	}
+	if (foundByUsername) {
+		const usernameInUse = new ServerConflictError("Username already in use")
+		sendMessageResponse(res, usernameInUse.code, usernameInUse.message)
+	}
+
+	const hashed = await bcrypt.hash(password, saltRounds)
+
+	const createdUser = await dbClient.user.create({
+		data: {
+			email,
+			username,
+			password: hashed,
+			profile: {
+				create: {
+					fullName,
+					phone,
+					address,
+					country,
+					imgUrl,
+				},
+			},
+		},
+		select: {
+			email: true,
+			username: true,
+			role: true,
+			profile: {
+				select: {
+					fullName: true,
+					phone: true,
+				},
+			},
+		},
+	})
+
+	return createdUser
+}
+
 export async function signUp(req, res) {
-	const { email, username, password, fullName, phone } = req.body
-
 	try {
-		const foundByEmail = await dbClient.user.findUnique({ where: { email } })
-		const foundByUsername = await dbClient.user.findUnique({
-			where: { username },
-		})
-
-		if (foundByEmail) {
-			const emailInUse = new ServerConflictError("Email already in use")
-			sendMessageResponse(res, emailInUse.code, emailInUse.message)
-		}
-		if (foundByUsername) {
-			const usernameInUse = new ServerConflictError("Username already in use")
-			sendMessageResponse(res, usernameInUse.code, usernameInUse.message)
-		}
-
-		const hashed = await bcrypt.hash(password, saltRounds)
-
-		const createdUser = await dbClient.user.create({
-			data: {
-				email,
-				username,
-				password: hashed,
-				profile: {
-					create: {
-						fullName,
-						phone,
-					},
-				},
-			},
-			select: {
-				email: true,
-				username: true,
-				role: true,
-				profile: {
-					select: {
-						fullName: true,
-						phone: true,
-					},
-				},
-			},
-		})
-
+		const createdUser = await createUserInDB(req, res)
 		const token = generateJwt(createdUser.username)
 		return sendDataResponse(res, 200, { token, user: createdUser })
 	} catch (err) {
@@ -199,6 +216,17 @@ export async function deleteUserById(req, res) {
 	try {
 		const deletedUser = await dbClient.user.delete({ where: { id } })
 		return sendDataResponse(res, 200, deletedUser)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
+export async function createUser(req, res) {
+	try {
+		const createdUser = await createUserInDB(req, res)
+		delete createdUser.password
+		return sendDataResponse(res, 200, createdUser)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err

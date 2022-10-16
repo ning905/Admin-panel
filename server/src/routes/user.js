@@ -1,5 +1,6 @@
 import { Router } from "express"
 import {
+	createUser,
 	deleteUserById,
 	getAllUsers,
 	getUserByUsername,
@@ -12,6 +13,7 @@ const router = Router()
 
 router.post("/login", login)
 router.post("/signup", signUp)
+router.post("/", validateAuthentication, validateAdmin, createUser)
 
 router.get("/", validateAuthentication, validateAdmin, getAllUsers)
 router.get("/:username", validateAuthentication, getUserByUsername)
