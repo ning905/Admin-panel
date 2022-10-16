@@ -127,7 +127,7 @@ export async function signUp(req, res) {
 	try {
 		const createdUser = await createUserInDB(req, res)
 		const token = generateJwt(createdUser.username)
-		return sendDataResponse(res, 200, { token, user: createdUser })
+		return sendDataResponse(res, 201, { token, user: createdUser })
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
@@ -226,7 +226,7 @@ export async function createUser(req, res) {
 	try {
 		const createdUser = await createUserInDB(req, res)
 		delete createdUser.password
-		return sendDataResponse(res, 200, createdUser)
+		return sendDataResponse(res, 201, createdUser)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
