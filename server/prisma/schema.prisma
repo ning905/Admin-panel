@@ -46,7 +46,7 @@ model Product {
   title        String        @db.VarChar(250)
   description  String
   category     String
-  price        String
+  price        Decimal       @db.Decimal(13, 2)
   stock        Int
   imgUrl       String        @default("https://www.4me.com/wp-content/uploads/2018/01/4me-icon-product.png")
   sellerId     String
