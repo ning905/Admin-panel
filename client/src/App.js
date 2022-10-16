@@ -52,7 +52,7 @@ function App() {
 								element={
 									<RequireAuth>
 										<RequireAdmin>
-											<List title="Add New User" />
+											<List />
 										</RequireAdmin>
 									</RequireAuth>
 								}
@@ -72,7 +72,7 @@ function App() {
 								element={
 									<RequireAuth>
 										<RequireAdmin>
-											<New inputs={userInputs} title="Add New User" />
+											<New />
 										</RequireAdmin>
 									</RequireAuth>
 								}
@@ -83,7 +83,7 @@ function App() {
 								index
 								element={
 									<RequireAuth>
-										<List title="Add New Product" />
+										<List />
 									</RequireAuth>
 								}
 							/>
@@ -99,7 +99,7 @@ function App() {
 								path="new"
 								element={
 									<RequireAuth>
-										<New inputs={productInputs} title="Add New Product" />
+										<New />
 									</RequireAuth>
 								}
 							/>

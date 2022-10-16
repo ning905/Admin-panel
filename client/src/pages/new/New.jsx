@@ -1,25 +1,80 @@
 import "./new.scss"
 import { DriveFolderUploadOutlined } from "@mui/icons-material"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Navbar from "../../components/navbar/Navbar.jsx"
 import Sidebar from "../../components/sidebar/Sidebar.jsx"
-import { useNavigate } from "react-router-dom"
+import Box from "@mui/material/Box"
+import TextField from "@mui/material/TextField"
+import client from "../../utils/client"
+import { useLocation } from "react-router-dom"
+import { AuthContext } from "../../context/AuthContext"
+import { productInputs, userInit, userInputs } from "../../utils/formSource"
 
-export default function New({ inputs, title }) {
+export default function New() {
 	const [file, setFile] = useState("")
+	const [title, setTitle] = useState("")
+	const [inputFields, setInputFields] = useState([])
 	const [data, setData] = useState({})
-	const [perc, setPerc] = useState(null)
-	const navigate = useNavigate()
+	const [alert, setAlert] = useState({})
 
-	useEffect(() => {}, [file])
+	const { currentUser } = useContext(AuthContext)
+	const location = useLocation()
+
+	useEffect(() => {
+		if (location.pathname === "/products/new") {
+			setInputFields(productInputs)
+			setTitle("Product")
+		} else if (
+			location.pathname === "/users/new" &&
+			currentUser.role === "ADMIN"
+		) {
+			setInputFields(userInputs)
+			setTitle("User")
+		}
+	}, [currentUser.role, location.pathname])
+
+	function handleUploadFile(e) {
+		console.log("files array: ", e.target.files)
+		setFile(e.target.files[0])
+	}
 
 	function handleInputs(e) {
 		const { name, value } = e.target
 		setData({ ...data, [name]: value })
 	}
+	console.log("data: ", data)
 
 	async function handleAddNew(e) {
 		e.preventDefault()
+
+		client
+			.post(location.pathname.slice(0, -4), {
+				...data,
+				imgUrl: URL.createObjectURL(file),
+			})
+			.then((res) => {
+				console.log("response: ", res)
+				setAlert({
+					status: "success",
+					message: title + " created",
+				})
+
+				setTimeout(() => {
+					setAlert({})
+					setData(userInit)
+					setFile("")
+				}, "3000")
+			})
+			.catch((err) => {
+				setAlert({
+					status: "error",
+					message: err.response.data.message,
+				})
+
+				setTimeout(() => {
+					setAlert({})
+				}, "3000")
+			})
 	}
 
 	return (
@@ -29,8 +84,9 @@ export default function New({ inputs, title }) {
 				<Navbar />
 
 				<div className="top">
-					<h1>{title}</h1>
+					<h1>Add New {title}</h1>
 				</div>
+
 				<div className="bottom">
 					<div className="left">
 						<img
@@ -41,37 +97,55 @@ export default function New({ inputs, title }) {
 							}
 							alt=""
 						/>
-					</div>
-					<div className="right">
-						<form onSubmit={handleAddNew}>
-							<div className="form-input">
-								<label htmlFor="file">
-									Image: <DriveFolderUploadOutlined className="icon" />
-								</label>
-								<input
-									type="file"
-									id="file"
-									style={{ display: "none" }}
-									onChange={(e) => setFile(e.target.files[0])}
-								/>
-							</div>
 
-							{inputs.map((input) => (
-								<div className="form-input" key={input.id}>
-									<label>{input.label}</label>
-									<input
-										name={input.label.toLowerCase()}
-										type={input.type}
-										placeholder={input.placeholder}
-										onChange={handleInputs}
-									/>
-								</div>
+						<div className="form-input">
+							<label htmlFor="file">
+								Image: <DriveFolderUploadOutlined className="icon" />
+							</label>
+							<input
+								type="file"
+								id="file"
+								accept="image/*"
+								style={{ display: "none" }}
+								onChange={handleUploadFile}
+							/>
+						</div>
+
+						{alert.status === "success" && (
+							<span className="success">{alert.message}</span>
+						)}
+						{alert.status === "error" && (
+							<span className="error">{alert.message}</span>
+						)}
+					</div>
+
+					<div className="right">
+						<Box
+							className="box"
+							component="form"
+							sx={{
+								"& > :not(style)": { m: 1, width: "30ch" },
+							}}
+							validate
+							autoComplete="off"
+							onSubmit={handleAddNew}
+						>
+							{inputFields.map((input) => (
+								<TextField
+									required={input.required}
+									variant="outlined"
+									label={input.label}
+									type={input.type}
+									name={input.name}
+									value={data[input.name]}
+									key={input.id}
+									className="form-input"
+									onChange={handleInputs}
+								/>
 							))}
 
-							<button disabled={perc !== null && perc < 100} type="submit">
-								Send
-							</button>
-						</form>
+							<button type="submit">Add</button>
+						</Box>
 					</div>
 				</div>
 			</div>
