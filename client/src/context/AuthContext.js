@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer, useState } from "react"
+import { createContext, useEffect, useReducer } from "react"
 import AuthReducer from "./AuthReducer"
 import jwt_decode from "jwt-decode"
 import client from "../utils/client"
@@ -18,7 +18,11 @@ export const AuthContextProvider = ({ children }) => {
 			client
 				.get(`/users/${username}`)
 				.then((res) => dispatch({ type: "LOGIN", payload: res.data.data }))
-				.catch((err) => console.error(err))
+				.catch((err) => {
+					console.log("remove token")
+					localStorage.removeItem(tokenKey)
+					console.error(err)
+				})
 		}
 	}, [])
 
