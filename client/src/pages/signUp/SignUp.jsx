@@ -43,7 +43,7 @@ export default function SignUp() {
 				sx={{
 					"& > :not(style)": { m: 1, width: "30ch" },
 				}}
-				noValidate
+				validate
 				autoComplete="off"
 				onSubmit={handleSignUp}
 			>
