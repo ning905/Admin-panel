@@ -10,15 +10,21 @@ import { useEffect, useState } from "react"
 import client from "../../utils/client"
 import { format } from "date-fns"
 
-export default function TransactionTable() {
+export default function TransactionTable({ target, type }) {
 	const [rows, setRows] = useState([])
 
 	useEffect(() => {
+		let query = ""
+		if (target) {
+			query = `?${type}=${target.id}`
+		}
+		const endpoint = "/transactions" + query
+
 		client
-			.get("/transactions")
+			.get(endpoint)
 			.then((res) => setRows(res.data.data))
 			.catch((err) => console.error(err))
-	}, [])
+	}, [target, type])
 
 	function formatTime(timeStr) {
 		const formatted = format(new Date(timeStr), "dd-MMM-yyyy")

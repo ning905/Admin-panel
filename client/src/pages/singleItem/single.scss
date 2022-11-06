@@ -5,6 +5,14 @@
 	.single-container {
 		flex: 6;
 
+		h2 {
+			padding: 10px 0 0 20px;
+
+			&.error {
+				color: red;
+			}
+		}
+
 		.top {
 			padding: 20px;
 			display: flex;
@@ -21,8 +29,8 @@
 					position: absolute;
 					top: 0;
 					right: 0;
-					padding: 5px;
-					font-size: 12px;
+					padding: 8px 10px;
+					font-size: 15px;
 					color: #7451f8;
 					background-color: #7551f818;
 					cursor: pointer;
@@ -30,7 +38,8 @@
 				}
 
 				.item {
-					display: flex;
+					display: grid;
+					grid-auto-flow: column;
 					gap: 20px;
 
 					.item-img {
@@ -47,6 +56,7 @@
 						.item-title {
 							margin-bottom: 10px;
 							color: #555;
+							font-size: 1.5rem;
 						}
 
 						.detail-item {
@@ -81,7 +91,7 @@
 	}
 	.title {
 		font-size: 16px;
-		color: lightgray;
+		color: #7451f8;
 		margin-bottom: 20px;
 	}
 }

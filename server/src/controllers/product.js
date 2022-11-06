@@ -37,6 +37,31 @@ export async function getAllProductsForUser(req, res) {
 	}
 }
 
+export async function getProductById(req, res) {
+	const { id } = req.params
+
+	try {
+		const foundProduct = await dbClient.product.findUnique({
+			where: { id },
+		})
+
+		if (!foundProduct) {
+			const notFound = new NotFoundError("product", "id")
+			return sendMessageResponse(res, notFound.code, notFound.message)
+		}
+
+		if (foundProduct.sellerId !== req.user.id && req.user.role !== "ADMIN") {
+			const noAccess = new NoAccessError("Only admins can access")
+			return sendMessageResponse(res, noAccess.code, noAccess.message)
+		}
+
+		return sendDataResponse(res, 200, foundProduct)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
 export async function deleteProductById(req, res) {
 	const id = req.params.id
 	const foundProduct = await dbClient.product.findUnique({ where: { id } })
@@ -44,8 +69,7 @@ export async function deleteProductById(req, res) {
 		const notFound = new NotFoundError("product", "id")
 		return sendMessageResponse(res, notFound.code, notFound.message)
 	}
-	console.log("foundProduct: ", foundProduct)
-	console.log("req user: ", req.user.role)
+
 	if (req.user.id !== foundProduct.sellerId && req.user.role !== "ADMIN") {
 		const noAccess = new NoAccessError("Only the seller or admin can access")
 		return sendMessageResponse(res, noAccess.code, noAccess.message)

@@ -10,7 +10,6 @@ export default function DataTable() {
 	const [data, setData] = useState([])
 	const [columns, setColumns] = useState([])
 	const [error, setError] = useState("")
-
 	const { currentUser } = useContext(AuthContext)
 	const location = useLocation()
 
@@ -63,9 +62,16 @@ export default function DataTable() {
 		headerAlign: "center",
 		align: "center",
 		renderCell: (params) => {
+			let link
+			if (location.pathname === "/products") {
+				link = `${location.pathname}/${params.row.id}`
+			} else if (location.pathname === "/users") {
+				link = `${location.pathname}/${params.row.username}`
+			}
+
 			return (
 				<div className="data-cell cell-action">
-					<Link to="/users/test" style={{ textDecoration: "none" }}>
+					<Link to={link} style={{ textDecoration: "none" }}>
 						<div className="view-button">View</div>
 					</Link>
 

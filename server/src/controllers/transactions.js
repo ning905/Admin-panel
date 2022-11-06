@@ -19,11 +19,17 @@ export async function getAllTransactionsForUser(req, res) {
 		},
 	}
 
-	if (req.user.role !== "ADMIN") {
+	if (req.query) {
 		query.where = {
-			product: {
-				sellerId: req.user.id,
-			},
+			product: {},
+		}
+
+		if (req.query.sellerId) {
+			query.where.product.sellerId = req.query.sellerId
+		}
+
+		if (req.query.productId) {
+			query.where.product.id = req.query.productId
 		}
 	}
 

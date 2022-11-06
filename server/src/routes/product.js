@@ -3,12 +3,14 @@ import {
 	createProduct,
 	deleteProductById,
 	getAllProductsForUser,
+	getProductById,
 } from "../controllers/product.js"
 import { validateAuthentication } from "../middleware/auth.js"
 
 const router = Router()
 
 router.get("/", validateAuthentication, getAllProductsForUser)
+router.get("/:id", validateAuthentication, getProductById)
 
 router.post("/", validateAuthentication, createProduct)
 

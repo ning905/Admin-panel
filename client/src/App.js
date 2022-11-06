@@ -2,7 +2,6 @@ import { useContext } from "react"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import { AuthContext } from "./context/AuthContext.js"
 import { DarkModeContext } from "./context/darkModeContext.js"
-import { productInputs, userInputs } from "./utils/formSource.js"
 import Home from "./pages/home/Home.jsx"
 import List from "./pages/list/List.jsx"
 import Login from "./pages/login/Login.jsx"
@@ -58,7 +57,7 @@ function App() {
 								}
 							/>
 							<Route
-								path=":userId"
+								path=":username"
 								element={
 									<RequireAuth>
 										<RequireAdmin>
@@ -74,6 +73,14 @@ function App() {
 										<RequireAdmin>
 											<New />
 										</RequireAdmin>
+									</RequireAuth>
+								}
+							/>
+							<Route
+								path="profile"
+								element={
+									<RequireAuth>
+										<Single />
 									</RequireAuth>
 								}
 							/>

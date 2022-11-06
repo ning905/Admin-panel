@@ -29,20 +29,8 @@ export async function login(req, res) {
 		const invalidLogin = new InvalidLoginError()
 		const foundUser = await dbClient.user.findUnique({
 			where: { email },
-			select: {
-				email: true,
-				username: true,
-				password: true,
-				role: true,
-				profile: {
-					select: {
-						fullName: true,
-						phone: true,
-						address: true,
-						country: true,
-						imgUrl: true,
-					},
-				},
+			include: {
+				profile: true,
 			},
 		})
 		if (!foundUser) {
@@ -108,6 +96,7 @@ async function createUserInDB(req, res) {
 			},
 		},
 		select: {
+			id: true,
 			email: true,
 			username: true,
 			role: true,
@@ -173,6 +162,7 @@ export async function getUserByUsername(req, res) {
 		const foundUser = await dbClient.user.findUnique({
 			where: { username },
 			select: {
+				id: true,
 				email: true,
 				username: true,
 				role: true,
@@ -191,6 +181,11 @@ export async function getUserByUsername(req, res) {
 		if (!foundUser) {
 			const notFound = new NotFoundError("user", "username")
 			return sendMessageResponse(res, notFound.code, notFound.message)
+		}
+
+		if (foundUser.id !== req.user.id && req.user.role !== "ADMIN") {
+			const noAccess = new NoAccessError("Only admins can access")
+			return sendMessageResponse(res, noAccess.code, noAccess.message)
 		}
 
 		return sendDataResponse(res, 200, foundUser)
