@@ -145,7 +145,7 @@ export default function New() {
 									? URL.createObjectURL(file)
 									: "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
 							}
-							alt=""
+							alt="uploaded"
 						/>
 
 						<div className="form-input">

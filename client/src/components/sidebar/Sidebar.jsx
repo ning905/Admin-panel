@@ -22,9 +22,9 @@ export default function Sidebar() {
 	const navigate = useNavigate()
 
 	function handleLogout() {
+		navigate("/login")
 		userAction({ type: "LOGOUT" })
 		localStorage.removeItem(process.env.REACT_APP_USER_TOKEN)
-		navigate("/login")
 	}
 
 	return (
@@ -38,10 +38,12 @@ export default function Sidebar() {
 			<div className="center">
 				<ul>
 					<p className="title">MAIN</p>
-					<li>
-						<DashboardIcon className="icon" />
-						<span>Dashboard</span>
-					</li>
+					<Link to="/" style={{ textDecoration: "none" }}>
+						<li>
+							<DashboardIcon className="icon" />
+							<span>Dashboard</span>
+						</li>
+					</Link>
 
 					<p className="title">LISTS</p>
 
@@ -96,10 +98,14 @@ export default function Sidebar() {
 					</li>
 
 					<p className="title">USER</p>
-					<li>
-						<AccountCircleOutlinedIcon className="icon" />
-						<span>Profile</span>
-					</li>
+
+					<Link to="/users/profile" style={{ textDecoration: "none" }}>
+						<li>
+							<AccountCircleOutlinedIcon className="icon" />
+							<span>Profile</span>
+						</li>
+					</Link>
+
 					<li onClick={handleLogout}>
 						<ExitToAppIcon className="icon" />
 						<span>Logout</span>

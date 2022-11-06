@@ -1,5 +1,5 @@
 export const userInit = {
-	username: "",
+	username: null,
 	email: "",
 	password: "",
 	phone: "",
