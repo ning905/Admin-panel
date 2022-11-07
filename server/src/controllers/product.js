@@ -43,6 +43,7 @@ export async function getProductById(req, res) {
 	try {
 		const foundProduct = await dbClient.product.findUnique({
 			where: { id },
+			include: { transactions: { include: { product: true } } },
 		})
 
 		if (!foundProduct) {

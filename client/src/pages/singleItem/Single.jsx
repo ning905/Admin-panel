@@ -8,6 +8,10 @@ import { AuthContext } from "../../context/AuthContext"
 import { useLocation, useParams } from "react-router-dom"
 import client from "../../utils/client"
 import { productInfo } from "../../utils/itemInfoFields"
+import {
+	getProductRevenueData,
+	getUserEarningData,
+} from "../../utils/getChartData"
 
 export default function Single() {
 	const [page, setPage] = useState({
@@ -16,6 +20,8 @@ export default function Single() {
 		itemToDisplay: {},
 		itemType: "",
 	})
+	const [transactionRows, setTransactionRows] = useState([])
+	const [chartData, setChartData] = useState([])
 	const [alert, setAlert] = useState({})
 	const { currentUser } = useContext(AuthContext)
 	const location = useLocation()
@@ -25,7 +31,7 @@ export default function Single() {
 		if (location.pathname.includes("/products")) {
 			setPage((pre) => ({
 				...pre,
-				chartTitle: "User Spending (Last 6 Months)",
+				chartTitle: "Revenue (Last 6 Months)",
 				infoFields: productInfo,
 				itemType: "product",
 			}))
@@ -33,7 +39,12 @@ export default function Single() {
 			client
 				.get(`/products/${params.productId}`)
 				.then((res) => {
-					setPage((pre) => ({ ...pre, itemToDisplay: res.data.data }))
+					setPage((pre) => ({
+						...pre,
+						itemToDisplay: res.data.data,
+					}))
+					setTransactionRows(res.data.data.transactions)
+					setChartData(getProductRevenueData(res.data.data))
 				})
 				.catch((err) => {
 					setAlert({
@@ -48,8 +59,7 @@ export default function Single() {
 		} else if (location.pathname.includes("/users")) {
 			setPage((pre) => ({
 				...pre,
-				chartTitle: "Revenue (Last 6 Months)",
-
+				chartTitle: "User Earning (Last 6 Months)",
 				itemType: "user",
 			}))
 
@@ -74,6 +84,18 @@ export default function Single() {
 			}
 		}
 	}, [currentUser, location, params])
+
+	useEffect(() => {
+		if (page.itemType === "user") {
+			client
+				.get(`/transactions?sellerId=${page.itemToDisplay.id}`)
+				.then((res) => {
+					setTransactionRows(res.data.data)
+					setChartData(getUserEarningData(res.data.data))
+				})
+				.catch((err) => console.error(err))
+		}
+	}, [page])
 
 	return (
 		<div className="single">
@@ -144,19 +166,14 @@ export default function Single() {
 					</div>
 
 					<div className="right">
-						<Chart aspect={3 / 1} title={page.chartTitle} />
+						<Chart aspect={3 / 1} title={page.chartTitle} data={chartData} />
 					</div>
 				</div>
 
 				<div className="bottom">
 					<h1 className="title">Last Transactions</h1>
 
-					{page.itemType === "user" && (
-						<TransactionTable target={page.itemToDisplay} type="sellerId" />
-					)}
-					{page.itemType === "product" && (
-						<TransactionTable target={page.itemToDisplay} type="productId" />
-					)}
+					<TransactionTable rowData={transactionRows} />
 				</div>
 			</div>
 		</div>

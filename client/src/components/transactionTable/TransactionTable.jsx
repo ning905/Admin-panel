@@ -7,24 +7,14 @@ import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 import { useEffect, useState } from "react"
-import client from "../../utils/client"
 import { format } from "date-fns"
 
-export default function TransactionTable({ target, type }) {
+export default function TransactionTable({ rowData }) {
 	const [rows, setRows] = useState([])
 
 	useEffect(() => {
-		let query = ""
-		if (target) {
-			query = `?${type}=${target.id}`
-		}
-		const endpoint = "/transactions" + query
-
-		client
-			.get(endpoint)
-			.then((res) => setRows(res.data.data))
-			.catch((err) => console.error(err))
-	}, [target, type])
+		setRows(rowData)
+	}, [rowData])
 
 	function formatTime(timeStr) {
 		const formatted = format(new Date(timeStr), "dd-MMM-yyyy")
