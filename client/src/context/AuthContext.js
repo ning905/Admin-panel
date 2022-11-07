@@ -1,7 +1,7 @@
 import { createContext, useEffect, useReducer } from "react"
-import AuthReducer from "./AuthReducer"
+import AuthReducer from "./AuthReducer.js"
 import jwt_decode from "jwt-decode"
-import client from "../utils/client"
+import client from "../utils/client.js"
 
 const tokenKey = process.env.REACT_APP_USER_TOKEN
 const token = localStorage.getItem(tokenKey) || null

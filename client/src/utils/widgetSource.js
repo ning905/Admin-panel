@@ -1,7 +1,9 @@
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined"
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined"
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined"
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined"
+import {
+	PersonOutlined,
+	AccountBalanceWalletOutlined,
+	ShoppingCartOutlined,
+	MonetizationOnOutlined,
+} from "@mui/icons-material"
 
 export const widget = {
 	user: {
@@ -9,7 +11,7 @@ export const widget = {
 		isMoney: false,
 		link: "See all users",
 		icon: (
-			<PersonOutlinedIcon
+			<PersonOutlined
 				className="icon"
 				style={{ color: "crimson", backgroundColor: "rgba(255, 0, 0, 0.2)" }}
 			/>
@@ -21,7 +23,7 @@ export const widget = {
 		isMoney: false,
 		link: "See details",
 		icon: (
-			<AccountBalanceWalletOutlinedIcon
+			<AccountBalanceWalletOutlined
 				className="icon"
 				style={{
 					backgroundColor: "rgba(128, 0, 128, 0.2)",
@@ -36,7 +38,7 @@ export const widget = {
 		isMoney: false,
 		link: "View all orders",
 		icon: (
-			<ShoppingCartOutlinedIcon
+			<ShoppingCartOutlined
 				className="icon"
 				style={{
 					backgroundColor: "rgba(218, 165, 32, 0.2)",
@@ -51,7 +53,7 @@ export const widget = {
 		isMoney: true,
 		link: "View net earnings",
 		icon: (
-			<MonetizationOnOutlinedIcon
+			<MonetizationOnOutlined
 				className="icon"
 				style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color: "green" }}
 			/>
