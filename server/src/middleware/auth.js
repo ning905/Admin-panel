@@ -15,9 +15,19 @@ function validateType(type) {
 	return false
 }
 
+function verifyJWT(token) {
+	try {
+		const { username } = jwt.verify(token, process.env.JWT_SECRET)
+		return username
+	} catch (err) {
+		const noAccess = new NoAccessError(err.message)
+		return sendMessageResponse(res, noAccess.code, noAccess.message)
+	}
+}
+
 export async function validateAuthentication(req, res, next) {
 	const header = req.header("authorization")
-	let username
+
 	if (!header) {
 		const error = new InvalidAuthError("Missing Authorization header")
 		return sendMessageResponse(res, error.code, error.message)
@@ -38,13 +48,7 @@ export async function validateAuthentication(req, res, next) {
 		return sendMessageResponse(res, error.code, error.message)
 	}
 
-	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-		if (err) {
-			const noAccess = new NoAccessError(err.message)
-			return sendMessageResponse(res, noAccess.code, noAccess.message)
-		}
-		username = decoded.username
-	})
+	const username = verifyJWT(token)
 
 	const foundUser = await dbClient.user.findUnique({ where: { username } })
 	if (!foundUser) {
@@ -54,6 +58,7 @@ export async function validateAuthentication(req, res, next) {
 
 	delete foundUser.password
 	req.user = foundUser
+
 	next()
 }
 

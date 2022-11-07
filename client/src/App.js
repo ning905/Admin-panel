@@ -77,6 +77,14 @@ function App() {
 								}
 							/>
 							<Route
+								path="edit/:username"
+								element={
+									<RequireAuth>
+										<New />
+									</RequireAuth>
+								}
+							/>
+							<Route
 								path="profile"
 								element={
 									<RequireAuth>
@@ -104,6 +112,14 @@ function App() {
 							/>
 							<Route
 								path="new"
+								element={
+									<RequireAuth>
+										<New />
+									</RequireAuth>
+								}
+							/>
+							<Route
+								path="edit/:id"
 								element={
 									<RequireAuth>
 										<New />

@@ -12,7 +12,7 @@ export const userColumns = [
 	{
 		field: "fullName",
 		headerName: "Full Name",
-		width: 200,
+		width: 180,
 		headerAlign: "center",
 		align: "left",
 		renderCell: (params) => {
@@ -37,7 +37,7 @@ export const userColumns = [
 	{
 		field: "phone",
 		headerName: "Phone Number",
-		width: 180,
+		width: 120,
 		headerAlign: "center",
 		align: "center",
 		valueGetter: (params) => {
@@ -47,7 +47,7 @@ export const userColumns = [
 	{
 		field: "role",
 		headerName: "Role",
-		width: 120,
+		width: 100,
 		headerAlign: "center",
 		align: "center",
 		valueGetter: (params) => {
@@ -90,7 +90,7 @@ export const productColumns = [
 	{
 		field: "title",
 		headerName: "Title",
-		width: 230,
+		width: 210,
 		headerAlign: "center",
 		align: "left",
 		renderCell: (params) => {
@@ -106,7 +106,7 @@ export const productColumns = [
 	{
 		field: "description",
 		headerName: "Description",
-		width: 230,
+		width: 210,
 		headerAlign: "center",
 		align: "left",
 		valueGetter: (params) => {
@@ -126,7 +126,7 @@ export const productColumns = [
 	{
 		field: "stock",
 		headerName: "Stock",
-		width: 120,
+		width: 100,
 		headerAlign: "center",
 		align: "center",
 		valueGetter: (params) => {
@@ -138,7 +138,7 @@ export const productColumns = [
 		headerName: "Status",
 		headerAlign: "center",
 		align: "center",
-		width: 120,
+		width: 100,
 		renderCell: (params) => {
 			return (
 				<div

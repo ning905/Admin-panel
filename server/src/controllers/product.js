@@ -43,7 +43,7 @@ export async function getProductById(req, res) {
 	try {
 		const foundProduct = await dbClient.product.findUnique({
 			where: { id },
-			include: { transactions: { include: { product: true } } },
+			include: { seller: true, transactions: { include: { product: true } } },
 		})
 
 		if (!foundProduct) {
@@ -104,7 +104,7 @@ export async function createProduct(req, res) {
 		return sendMessageResponse(res, notFound.code, notFound.message)
 	}
 
-	if (foundSeller && req.user.role !== "ADMIN") {
+	if (req.body.sellerUsername && req.user.role !== "ADMIN") {
 		const noAccess = new NoAccessError(
 			"Only admin can create products for sellers"
 		)
@@ -126,6 +126,64 @@ export async function createProduct(req, res) {
 
 	try {
 		const product = await dbClient.product.create({
+			data: {
+				title,
+				description,
+				category,
+				price,
+				stock: Number(stock),
+				imgUrl,
+				seller: { connect: { username: sellerUsername } },
+			},
+		})
+
+		return sendDataResponse(res, 201, product)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
+export async function updateProductById(req, res) {
+	const { title, description, category, price, stock, imgUrl } = req.body
+	let sellerUsername
+
+	if (req.body.sellerUsername) {
+		sellerUsername = req.body.sellerUsername
+	} else if (req.user.role === "USER") {
+		sellerUsername = req.user.username
+	}
+
+	const foundSeller = await dbClient.user.findUnique({
+		where: { username: sellerUsername },
+	})
+
+	if (!foundSeller) {
+		const notFound = new NotFoundError("user", "username")
+		return sendMessageResponse(res, notFound.code, notFound.message)
+	}
+
+	if (req.body.sellerUsername && req.user.role !== "ADMIN") {
+		const noAccess = new NoAccessError("Only admin can edit products for sellers")
+		return sendMessageResponse(res, noAccess.code, noAccess.message)
+	}
+
+	if (!Number.isInteger(Number(stock))) {
+		const error = new BadRequestError("Stock must be an integer")
+		return sendMessageResponse(res, error.code, error.message)
+	}
+
+	if (price.includes(".")) {
+		const arr = price.split(".")
+		if (arr[1].length > 2) {
+			const error = new BadRequestError("Price can only accept 2 decimal places")
+			return sendMessageResponse(res, error.code, error.message)
+		}
+	}
+
+	try {
+		const product = await dbClient.product.update({
+			where: { id: req.params.id },
 			data: {
 				title,
 				description,

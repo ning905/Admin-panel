@@ -58,7 +58,7 @@ export default function DataTable() {
 	const actionColumn = {
 		field: "action",
 		headerName: "Action",
-		width: 200,
+		width: 150,
 		headerAlign: "center",
 		align: "center",
 		renderCell: (params) => {

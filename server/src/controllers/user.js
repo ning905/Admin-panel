@@ -5,17 +5,19 @@ import {
 	InvalidLoginError,
 	NoAccessError,
 	NotFoundError,
-	ServerConflictError,
 } from "../utils/Error.js"
 import {
 	sendDataResponse,
 	sendMessageResponse,
 } from "../utils/serverResponse.js"
-import { generateJwt, validateCredentials } from "./utils.js"
-import bcrypt from "bcrypt"
+import {
+	createUserInDB,
+	generateJwt,
+	updateUserInDB,
+	validateCredentials,
+} from "./utils.js"
 
 const serverError = new InternalServerError()
-const saltRounds = 8
 
 export async function login(req, res) {
 	const { email, password } = req.body
@@ -52,71 +54,22 @@ export async function login(req, res) {
 	}
 }
 
-async function createUserInDB(req, res) {
-	const {
-		email,
-		username,
-		password,
-		fullName,
-		phone,
-		address,
-		country,
-		imgUrl,
-	} = req.body
-
-	const foundByEmail = await dbClient.user.findUnique({ where: { email } })
-	const foundByUsername = await dbClient.user.findUnique({
-		where: { username },
-	})
-
-	if (foundByEmail) {
-		const emailInUse = new ServerConflictError("Email already in use")
-		sendMessageResponse(res, emailInUse.code, emailInUse.message)
-	}
-	if (foundByUsername) {
-		const usernameInUse = new ServerConflictError("Username already in use")
-		sendMessageResponse(res, usernameInUse.code, usernameInUse.message)
-	}
-
-	const hashed = await bcrypt.hash(password, saltRounds)
-
-	const createdUser = await dbClient.user.create({
-		data: {
-			email,
-			username,
-			password: hashed,
-			profile: {
-				create: {
-					fullName,
-					phone,
-					address,
-					country,
-					imgUrl,
-				},
-			},
-		},
-		select: {
-			id: true,
-			email: true,
-			username: true,
-			role: true,
-			profile: {
-				select: {
-					fullName: true,
-					phone: true,
-				},
-			},
-		},
-	})
-
-	return createdUser
-}
-
 export async function signUp(req, res) {
 	try {
 		const createdUser = await createUserInDB(req, res)
 		const token = generateJwt(createdUser.username)
 		return sendDataResponse(res, 201, { token, user: createdUser })
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
+export async function createUser(req, res) {
+	try {
+		const createdUser = await createUserInDB(req, res)
+
+		return sendDataResponse(res, 201, createdUser)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err
@@ -195,6 +148,17 @@ export async function getUserByUsername(req, res) {
 	}
 }
 
+export async function updateUserByUsername(req, res) {
+	try {
+		const updated = await updateUserInDB(req, res)
+
+		return sendDataResponse(res, 201, updated)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}
+
 export async function deleteUserById(req, res) {
 	if (req.user.role !== "ADMIN") {
 		const noAccess = new NoAccessError("Only admins can access")
@@ -211,17 +175,6 @@ export async function deleteUserById(req, res) {
 	try {
 		const deletedUser = await dbClient.user.delete({ where: { id } })
 		return sendDataResponse(res, 200, deletedUser)
-	} catch (err) {
-		sendMessageResponse(res, serverError.code, serverError.message)
-		throw err
-	}
-}
-
-export async function createUser(req, res) {
-	try {
-		const createdUser = await createUserInDB(req, res)
-		delete createdUser.password
-		return sendDataResponse(res, 201, createdUser)
 	} catch (err) {
 		sendMessageResponse(res, serverError.code, serverError.message)
 		throw err

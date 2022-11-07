@@ -65,26 +65,41 @@
 					grid-template-rows: repeat(4, 1fr);
 					gap: 20px;
 
-					// .alert-wrap {
-					// 	width: fit-content;
-					// 	display: flex;
-					// 	gap: 10px;
-					// 	justify-content: space-between;
-					// 	align-items: center;
-
-					button {
-						width: 150px;
-						// padding: 10px;
+					.button-wrap {
 						margin: 10px;
-						border: none;
-						background-color: teal;
-						color: white;
-						font-weight: bold;
-						cursor: pointer;
+						display: flex;
+						gap: 10px;
 
-						&:disabled {
-							background-color: rgba(2, 51, 51, 0.456);
-							cursor: not-allowed;
+						button {
+							width: 150px;
+							border: none;
+							font-weight: bold;
+							font-size: 1.1rem;
+							letter-spacing: 0.1rem;
+							cursor: pointer;
+
+							&.submit {
+								background-color: teal;
+								color: white;
+
+								&:hover {
+									background-color: rgb(34, 110, 110);
+								}
+
+								&:disabled {
+									background-color: rgba(2, 51, 51, 0.456);
+									cursor: not-allowed;
+								}
+							}
+
+							&.cancel {
+								background-color: rgb(192, 221, 221);
+								color: teal;
+
+								&:hover {
+									background-color: rgb(205, 233, 233);
+								}
+							}
 						}
 					}
 				}

@@ -4,6 +4,7 @@ import {
 	deleteProductById,
 	getAllProductsForUser,
 	getProductById,
+	updateProductById,
 } from "../controllers/product.js"
 import { validateAuthentication } from "../middleware/auth.js"
 
@@ -13,6 +14,7 @@ router.get("/", validateAuthentication, getAllProductsForUser)
 router.get("/:id", validateAuthentication, getProductById)
 
 router.post("/", validateAuthentication, createProduct)
+router.patch("/:id", validateAuthentication, updateProductById)
 
 router.delete("/:id", validateAuthentication, deleteProductById)
 

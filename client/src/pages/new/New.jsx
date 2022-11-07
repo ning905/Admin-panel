@@ -6,10 +6,12 @@ import Sidebar from "../../components/sidebar/Sidebar.jsx"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import client from "../../utils/client"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "../../context/AuthContext"
 import {
 	adminProductInput,
+	getProductData,
+	getUserData,
 	productInit,
 	productInputs,
 	userInit,
@@ -17,42 +19,91 @@ import {
 } from "../../utils/formSource"
 
 export default function New() {
-	const [file, setFile] = useState("")
-	const [data, setData] = useState({})
-	const [alert, setAlert] = useState({})
-	const [page, setPage] = useState({
-		title: "",
-		inputFields: [],
-		initialData: {},
-	})
-
 	const { currentUser } = useContext(AuthContext)
 	const location = useLocation()
+	const params = useParams()
+	const initPage = {
+		title: "",
+		action: "Add",
+		initialData: {},
+		inputFields: [],
+		initImgUrl:
+			"https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg",
+	}
+	let endpoint
+	let getImgUrl
+	console.log("productInit", productInit)
+	if (location.pathname.includes("/products")) {
+		initPage.title = "Product"
+		initPage.initialData = productInit
+		initPage.inputFields = productInputs
 
-	useEffect(() => {
-		if (location.pathname === "/products/new") {
-			let inputFields = productInputs
+		if (currentUser.role === "ADMIN") {
+			initPage.inputFields = productInputs.concat(adminProductInput)
+		}
 
-			if (currentUser.role === "ADMIN") {
-				inputFields = productInputs.concat(adminProductInput)
-			}
+		if (location.pathname.includes("/edit")) {
+			initPage.action = "Update"
+			endpoint = "/products/" + params.id
+			getImgUrl = (data) => data.imgUrl
+		}
+	} else if (
+		location.pathname.includes("/users") &&
+		currentUser.role === "ADMIN"
+	) {
+		initPage.title = "User"
+		initPage.inputFields = userInputs
+		initPage.initialData = userInit
 
-			setPage({
-				title: "Product",
-				inputFields: inputFields,
-				initialData: productInit,
-			})
-		} else if (
-			location.pathname === "/users/new" &&
-			currentUser.role === "ADMIN"
-		) {
-			setPage({
-				title: "User",
-				inputFields: userInputs,
-				initialData: userInit,
+		if (location.pathname.includes("/edit")) {
+			endpoint = "/users/" + params.username
+			getImgUrl = (data) => data.profile.imgUrl
+			initPage.action = "Update"
+			initPage.inputFields = userInputs.map((input) => {
+				if (input.name === "password") {
+					input.required = false
+				}
+				return input
 			})
 		}
-	}, [currentUser.role, location.pathname])
+	}
+
+	const [alert, setAlert] = useState({})
+	const [imgUrl, setImageUrl] = useState(initPage.initImgUrl)
+	const [data, setData] = useState(initPage.initialData)
+	const [page, setPage] = useState(initPage)
+	const navigate = useNavigate()
+	console.log("page: ", page)
+	useEffect(() => {
+		if (page.action === "Update") {
+			client
+				.get(endpoint)
+				.then((res) => {
+					setPage((pre) => ({
+						...pre,
+						initImgUrl: getImgUrl(res.data.data),
+					}))
+					console.log("data loaded: ", res.data.data)
+					if (page.title === "Product") {
+						setData(getProductData(res.data.data))
+					} else if (page.title === "User") {
+						setData(getUserData(res.data.data))
+					}
+					setImageUrl(getImgUrl(res.data.data))
+				})
+				.catch((err) => {
+					console.log("error", err)
+					setAlert({
+						status: "error",
+						message: err.response.data.message,
+					})
+
+					setTimeout(() => {
+						setAlert({})
+					}, "3000")
+				})
+		}
+	}, [currentUser, location, params, page.action])
 
 	function handleUploadFile(e) {
 		if (e.target.files[0].size / 1024 / 1024 > 2) {
@@ -65,7 +116,7 @@ export default function New() {
 				setAlert({})
 			}, "3000")
 		} else {
-			setFile(e.target.files[0])
+			setImageUrl(URL.createObjectURL(e.target.files[0]))
 		}
 	}
 
@@ -93,40 +144,76 @@ export default function New() {
 		setData({ ...data, [name]: value })
 	}
 
-	async function handleAddNew(e) {
+	async function handleSubmit(e) {
 		e.preventDefault()
 		const body = { ...data }
 
-		if (file) {
-			body.imgUrl = URL.createObjectURL(file)
+		if (page.action === "Add") {
+			if (imgUrl !== initPage.initImgUrl) {
+				body.imgUrl = imgUrl
+			}
+
+			client
+				.post(location.pathname.slice(0, -4), body)
+				.then((res) => {
+					setAlert({
+						status: "success",
+						message: page.title + " created",
+					})
+
+					setTimeout(() => {
+						setAlert({})
+						setData(initPage.initialData)
+						setImageUrl(initPage.initImgUrl)
+					}, "3000")
+				})
+				.catch((err) => {
+					setAlert({
+						status: "error",
+						message: err.response.data.message,
+					})
+
+					setTimeout(() => {
+						setAlert({})
+					}, "3000")
+				})
+		} else if (page.action === "Update") {
+			body.imgUrl = imgUrl
+
+			client
+				.patch(endpoint, body)
+				.then((res) => {
+					setAlert({
+						status: "success",
+						message: page.title + " updated",
+					})
+
+					setTimeout(() => {
+						if (page.title === "Product") {
+							navigate(`/products/${params.id}`)
+						} else if (page.title === "User") {
+							if (currentUser.role === "ADMIN") {
+								navigate(`/users/${res.data.data.username}`)
+							} else {
+								navigate("/users/profile")
+							}
+						}
+					}, "3000")
+				})
+				.catch((err) => {
+					setAlert({
+						status: "error",
+						message: err.response.data.message,
+					})
+
+					setTimeout(() => {
+						setAlert({})
+					}, "3000")
+				})
 		}
-
-		client
-			.post(location.pathname.slice(0, -4), body)
-			.then((res) => {
-				setAlert({
-					status: "success",
-					message: page.title + " created",
-				})
-
-				setTimeout(() => {
-					setAlert({})
-					setData(page.initialData)
-					setFile("")
-				}, "3000")
-			})
-			.catch((err) => {
-				setAlert({
-					status: "error",
-					message: err.response.data.message,
-				})
-
-				setTimeout(() => {
-					setAlert({})
-				}, "3000")
-			})
 	}
 
+	// console.log("imgUrl: ", imgUrl)
 	return (
 		<div className="new">
 			<Sidebar />
@@ -139,14 +226,7 @@ export default function New() {
 
 				<div className="bottom">
 					<div className="left">
-						<img
-							src={
-								file
-									? URL.createObjectURL(file)
-									: "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-							}
-							alt="uploaded"
-						/>
+						<img src={imgUrl} alt="uploaded" />
 
 						<div className="form-input">
 							<label htmlFor="file">
@@ -177,7 +257,7 @@ export default function New() {
 								"& > :not(style)": { m: 1, width: "30ch" },
 							}}
 							autoComplete="off"
-							onSubmit={handleAddNew}
+							onSubmit={handleSubmit}
 						>
 							{page.inputFields.map((input) => (
 								<TextField
@@ -196,7 +276,18 @@ export default function New() {
 								/>
 							))}
 
-							<button type="submit">Add</button>
+							<div className="button-wrap">
+								<button
+									type="submit"
+									className="submit"
+									disabled={alert.message ? true : false}
+								>
+									{page.action}
+								</button>
+								<button className="cancel" onClick={() => navigate(endpoint)}>
+									Cancel
+								</button>
+							</div>
 						</Box>
 					</div>
 				</div>

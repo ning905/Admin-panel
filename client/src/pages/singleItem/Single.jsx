@@ -5,7 +5,7 @@ import Chart from "../../components/chart/Chart.jsx"
 import TransactionTable from "../../components/transactionTable/TransactionTable.jsx"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../context/AuthContext"
-import { useLocation, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import client from "../../utils/client"
 import { productInfo } from "../../utils/itemInfoFields"
 import {
@@ -106,7 +106,27 @@ export default function Single() {
 				{alert.message && <h2 className={alert.status}>{alert.message}</h2>}
 				<div className="top">
 					<div className="left">
-						<div className="edit-button">Edit</div>
+						{page.itemType === "user" &&
+							(currentUser.role === "ADMIN" ||
+								currentUser.id === page.itemToDisplay.id) && (
+								<Link
+									to={`/users/edit/${page.itemToDisplay.username}`}
+									style={{ textDecoration: "none" }}
+								>
+									<div className="edit-button">Edit</div>
+								</Link>
+							)}
+
+						{page.itemType === "product" &&
+							(currentUser.role === "ADMIN" ||
+								currentUser.id === page.itemToDisplay.sellerId) && (
+								<Link
+									to={`/products/edit/${page.itemToDisplay.id}`}
+									style={{ textDecoration: "none" }}
+								>
+									<div className="edit-button">Edit</div>
+								</Link>
+							)}
 
 						<h1 className="title">Information</h1>
 

@@ -1,11 +1,23 @@
 export const userInit = {
-	username: null,
+	username: "",
 	email: "",
 	password: "",
 	phone: "",
 	fullName: "",
 	address: "",
 	country: "",
+}
+
+export function getUserData(data) {
+	return {
+		username: data.username,
+		email: data.email,
+		password: "",
+		phone: data.profile.phone,
+		fullName: data.profile.fullName,
+		address: data.profile.address,
+		country: data.profile.country,
+	}
 }
 
 export const userInputs = [
@@ -107,6 +119,13 @@ export const productInputs = [
 		required: true,
 	},
 ]
+
+export function getProductData(data) {
+	const product = productInit
+	productInputs.forEach((input) => (product[input.name] = data[input.name]))
+	product.sellerUsername = data.seller.username
+	return product
+}
 
 export const adminProductInput = [
 	{
