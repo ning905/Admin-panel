@@ -44,7 +44,7 @@ export default function Single() {
 						itemToDisplay: res.data.data,
 					}))
 					setTransactionRows(res.data.data.transactions)
-					setChartData(getProductRevenueData(res.data.data))
+					setChartData(getProductRevenueData(res.data.data.transactions))
 				})
 				.catch((err) => {
 					setAlert({

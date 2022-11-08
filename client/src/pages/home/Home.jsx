@@ -7,6 +7,7 @@ import TransactionTable from "../../components/transactionTable/TransactionTable
 import Widget from "../../components/widget/Widget.jsx"
 import { AuthContext } from "../../context/AuthContext.js"
 import client from "../../utils/client.js"
+import { getProductRevenueData } from "../../utils/getChartData.js"
 import "./home.scss"
 
 export default function Home() {
@@ -38,8 +39,12 @@ export default function Home() {
 					<Widget type="earning" />
 				</ul>
 				<div className="charts">
-					<Featured />
-					<Chart title="Last 6 Months (Revenue)" aspect={2 / 1} />
+					<Featured transactions={transactionRows} />
+					<Chart
+						title="Last 6 Months (Revenue)"
+						aspect={2 / 1}
+						data={getProductRevenueData(transactionRows)}
+					/>
 				</div>
 				<div className="list-container">
 					<div className="list-title">Latest Transactions</div>
