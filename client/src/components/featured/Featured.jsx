@@ -5,21 +5,18 @@ import "react-circular-progressbar/dist/styles.css"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined"
 import {
-	getLastMonthTransactions,
-	getLastWeekTransactions,
+	getLastPeriodItems,
 	getRevenue,
-	getThisMonthTransactions,
-	getThisWeekTransactions,
-	getTodayTransactions,
+	getThisPeriodItems,
 } from "../../utils/getChartData"
 
 export default function Featured({ transactions }) {
 	const target = 12400
-	const todayRevenue = getRevenue(getTodayTransactions(transactions))
-	const thisWeekRevenue = getRevenue(getThisWeekTransactions(transactions))
-	const lastWeekRevenue = getRevenue(getLastWeekTransactions(transactions))
-	const thisMonthRevenue = getRevenue(getThisMonthTransactions(transactions))
-	const lastMonthRevenue = getRevenue(getLastMonthTransactions(transactions))
+	const todayRevenue = getRevenue(getThisPeriodItems("day", transactions))
+	const thisWeekRevenue = getRevenue(getThisPeriodItems("week", transactions))
+	const lastWeekRevenue = getRevenue(getLastPeriodItems("week", transactions))
+	const thisMonthRevenue = getRevenue(getThisPeriodItems("month", transactions))
+	const lastMonthRevenue = getRevenue(getLastPeriodItems("month", transactions))
 
 	function getItemResultClassName(sales, target) {
 		let className = "item-result"
@@ -35,6 +32,15 @@ export default function Featured({ transactions }) {
 		return (number / 1000).toFixed(1)
 	}
 
+	function getProgressBarData() {
+		let progress = (todayRevenue / target) * 100
+		if (progress % 1) {
+			progress = progress.toFixed(1)
+		}
+
+		return progress
+	}
+
 	return (
 		<div className="featured">
 			<div className="top">
@@ -46,7 +52,7 @@ export default function Featured({ transactions }) {
 				<div className="featured-chart">
 					<CircularProgressbar
 						value={todayRevenue / target}
-						text={`${todayRevenue / target}%`}
+						text={`${getProgressBarData()}%`}
 						strokeWidth={5}
 					/>
 				</div>

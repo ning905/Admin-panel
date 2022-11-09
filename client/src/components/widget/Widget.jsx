@@ -1,12 +1,20 @@
 import "./widget.scss"
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import { widget } from "../../utils/widgetSource"
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material"
+import { Link } from "react-router-dom"
 
-export default function Widget({ type }) {
-	//temporary
-	const amount = 100
-	const diff = 20
+export default function Widget({ type, amount, diff }) {
 	const data = widget[type]
+
+	function getPercentageClassName(diff) {
+		let className = "percentage"
+		if (diff >= 0) {
+			className += " positive"
+		} else {
+			className += " negative"
+		}
+		return className
+	}
 
 	return (
 		<li className="widget">
@@ -15,11 +23,17 @@ export default function Widget({ type }) {
 				<span className="counter">
 					{data.isMoney && "£"} {amount}
 				</span>
-				<span className="link">{data.link}</span>
+				<Link to={data.path} style={{ textDecoration: "none" }}>
+					<span className="link">{data.link}</span>
+				</Link>
 			</div>
 			<div className="right">
-				<div className="percentage positive">
-					<KeyboardArrowUpIcon />
+				<div className={getPercentageClassName(diff)}>
+					{diff < 0 ? (
+						<KeyboardArrowDown fontSize="small" />
+					) : (
+						<KeyboardArrowUp fontSize="small" />
+					)}
 					{diff} %
 				</div>
 				{data.icon}

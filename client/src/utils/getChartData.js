@@ -28,40 +28,31 @@ export function getProductRevenueData(transactions, months = 6) {
 	return data
 }
 
-export function getTodayTransactions(transactions) {
-	return transactions.filter((tran) =>
-		moment(tran.createdAt).isSame(moment(), "day")
-	)
+export function getThisPeriodItems(period, items) {
+	return items.filter((item) => moment(item.createdAt).isSame(moment(), period))
 }
 
-export function getThisWeekTransactions(transactions) {
-	return transactions.filter((tran) =>
-		moment(tran.createdAt).isSame(moment(), "week")
-	)
-}
-
-export function getThisMonthTransactions(transactions) {
-	return transactions.filter((tran) =>
-		moment(tran.createdAt).isSame(moment(), "months")
-	)
-}
-
-export function getLastWeekTransactions(transactions) {
-	return transactions.filter((tran) =>
-		moment(tran.createdAt).isBetween(
-			moment().subtract(1, "week").startOf("week"),
-			moment().startOf("week")
+export function getLastPeriodItems(period, items) {
+	return items.filter((item) =>
+		moment(item.createdAt).isBetween(
+			moment().subtract(1, period).startOf(period),
+			moment().startOf(period)
 		)
 	)
 }
 
-export function getLastMonthTransactions(transactions) {
-	return transactions.filter((tran) =>
-		moment(tran.createdAt).isBetween(
-			moment().subtract(1, "months").startOf("month"),
-			moment().startOf("month")
-		)
-	)
+export function getDataDiff(current, previous) {
+	let diff = (current / previous - 1) * 100
+
+	if (previous === 0) {
+		diff = (current - 1) * 100
+	}
+
+	if (diff % 1) {
+		diff = diff.toFixed(1)
+	}
+
+	return diff
 }
 
 function getEarning(transactions) {

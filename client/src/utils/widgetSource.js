@@ -10,6 +10,7 @@ export const widget = {
 		title: "USERS",
 		isMoney: false,
 		link: "See all users",
+		path: "/users",
 		icon: (
 			<PersonOutlined
 				className="icon"
@@ -21,6 +22,7 @@ export const widget = {
 	product: {
 		title: "PRODUCTS",
 		isMoney: false,
+		path: "/products",
 		link: "See details",
 		icon: (
 			<AccountBalanceWalletOutlined
@@ -37,6 +39,7 @@ export const widget = {
 		title: "ORDERS",
 		isMoney: false,
 		link: "View all orders",
+		path: "/",
 		icon: (
 			<ShoppingCartOutlined
 				className="icon"
@@ -52,6 +55,7 @@ export const widget = {
 		title: "EARNINGS",
 		isMoney: true,
 		link: "View net earnings",
+		path: "/",
 		icon: (
 			<MonetizationOnOutlined
 				className="icon"
