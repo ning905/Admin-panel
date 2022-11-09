@@ -13,6 +13,20 @@
 			}
 		}
 
+		.go-back {
+			color: #6439ff;
+			font-weight: 500;
+			font-size: 0.9rem;
+			display: flex;
+			align-items: center;
+			padding: 10px 0 0 20px;
+			cursor: pointer;
+
+			&:hover {
+				color: #aa97ee;
+			}
+		}
+
 		.top {
 			padding: 20px;
 			display: flex;
@@ -35,6 +49,11 @@
 					background-color: #7551f818;
 					cursor: pointer;
 					border-radius: 0px 0 0 5px;
+
+					&:hover {
+						color: #7451f8;
+						background-color: #aa97ee18;
+					}
 				}
 
 				.item {

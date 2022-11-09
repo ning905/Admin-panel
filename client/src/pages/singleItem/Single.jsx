@@ -5,13 +5,14 @@ import Chart from "../../components/chart/Chart.jsx"
 import TransactionTable from "../../components/transactionTable/TransactionTable.jsx"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../context/AuthContext"
-import { Link, useLocation, useParams } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import client from "../../utils/client"
 import { productInfo } from "../../utils/itemInfoFields"
 import {
 	getProductRevenueData,
 	getUserEarningData,
 } from "../../utils/getChartData"
+import { ArrowBackIos } from "@mui/icons-material"
 
 export default function Single() {
 	const [page, setPage] = useState({
@@ -26,6 +27,7 @@ export default function Single() {
 	const { currentUser } = useContext(AuthContext)
 	const location = useLocation()
 	const params = useParams()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (location.pathname.includes("/products")) {
@@ -104,6 +106,9 @@ export default function Single() {
 				<Navbar />
 
 				{alert.message && <h2 className={alert.status}>{alert.message}</h2>}
+				<span className="go-back" onClick={() => navigate(-1)}>
+					<ArrowBackIos fontSize="1rem" /> Back
+				</span>
 				<div className="top">
 					<div className="left">
 						{page.itemType === "user" &&
