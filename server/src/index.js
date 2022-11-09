@@ -2,7 +2,10 @@ import "dotenv/config"
 import express from "express"
 import "express-async-errors"
 import cors from "cors"
-import { sendDataResponse } from "./utils/serverResponse.js"
+import {
+	sendDataResponse,
+	sendMessageResponse,
+} from "./utils/serverResponse.js"
 import userRouter from "./routes/user.js"
 import productRouter from "./routes/product.js"
 import transactionRouter from "./routes/transaction.js"
@@ -12,6 +15,10 @@ app.disable("x-powered-by")
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use("/", (req, res) => {
+	sendMessageResponse(res, 200, "OK")
+})
 
 app.use("/users", userRouter)
 app.use("/products", productRouter)
