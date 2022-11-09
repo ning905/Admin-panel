@@ -65,36 +65,36 @@ export default function Sidebar() {
 
 					<li>
 						<CreditCardIcon className="icon" />
-						<span>Orders</span>
+						<span>Orders*</span>
 					</li>
 
 					<li>
 						<LocalShippingIcon className="icon" />
-						<span>Delivery</span>
+						<span>Delivery*</span>
 					</li>
 
 					<p className="title">USEFUL LINKS</p>
 					<li>
 						<InsertChartIcon className="icon" />
-						<span>Stats</span>
+						<span>Stats*</span>
 					</li>
 					<li>
 						<NotificationsNoneIcon className="icon" />
-						<span>Notifications</span>
+						<span>Notifications*</span>
 					</li>
 
 					<p className="title">SERVICE</p>
 					<li>
 						<SettingsSystemDaydreamOutlinedIcon className="icon" />
-						<span>System Health</span>
+						<span>System Health*</span>
 					</li>
 					<li>
 						<PsychologyOutlinedIcon className="icon" />
-						<span>Logs</span>
+						<span>Logs*</span>
 					</li>
 					<li>
 						<SettingsApplicationsIcon className="icon" />
-						<span>Settings</span>
+						<span>Settings*</span>
 					</li>
 
 					<p className="title">USER</p>

@@ -5,6 +5,20 @@
 	.new-container {
 		flex: 6;
 
+		.go-back {
+			color: #6439ff;
+			font-weight: 500;
+			font-size: 0.9rem;
+			display: flex;
+			align-items: center;
+			padding: 10px 0 0 20px;
+			cursor: pointer;
+
+			&:hover {
+				color: #aa97ee;
+			}
+		}
+
 		.top,
 		.bottom {
 			-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);

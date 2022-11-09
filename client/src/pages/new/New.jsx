@@ -1,5 +1,5 @@
 import "./new.scss"
-import { DriveFolderUploadOutlined } from "@mui/icons-material"
+import { ArrowBackIos, DriveFolderUploadOutlined } from "@mui/icons-material"
 import { useContext, useEffect, useState } from "react"
 import Navbar from "../../components/navbar/Navbar.jsx"
 import Sidebar from "../../components/sidebar/Sidebar.jsx"
@@ -220,6 +220,9 @@ export default function New() {
 			<div className="new-container">
 				<Navbar />
 
+				<span className="go-back" onClick={() => navigate(-1)}>
+					<ArrowBackIos fontSize="1rem" /> Back
+				</span>
 				<div className="top">
 					<h1>Add New {page.title}</h1>
 				</div>
