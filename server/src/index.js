@@ -16,10 +16,6 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use("/", (req, res) => {
-	sendMessageResponse(res, 200, "OK")
-})
-
 app.use("/users", userRouter)
 app.use("/products", productRouter)
 app.use("/transactions", transactionRouter)
