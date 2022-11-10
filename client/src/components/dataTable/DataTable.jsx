@@ -111,7 +111,6 @@ export default function DataTable() {
 				columns={columns.concat(actionColumn)}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
-				checkboxSelection
 			/>
 		</div>
 	)

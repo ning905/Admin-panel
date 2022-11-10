@@ -73,7 +73,7 @@ export default function New() {
 	const [data, setData] = useState(initPage.initialData)
 	const [page, setPage] = useState(initPage)
 	const navigate = useNavigate()
-	console.log("page: ", page)
+
 	useEffect(() => {
 		if (page.action === "Update") {
 			client
@@ -83,7 +83,7 @@ export default function New() {
 						...pre,
 						initImgUrl: getImgUrl(res.data.data),
 					}))
-					console.log("data loaded: ", res.data.data)
+
 					if (page.title === "Product") {
 						setData(getProductData(res.data.data))
 					} else if (page.title === "User") {
@@ -92,7 +92,6 @@ export default function New() {
 					setImageUrl(getImgUrl(res.data.data))
 				})
 				.catch((err) => {
-					console.log("error", err)
 					setAlert({
 						status: "error",
 						message: err.response.data.message,
@@ -103,6 +102,7 @@ export default function New() {
 					}, "3000")
 				})
 		}
+		// eslint-disable-next-line
 	}, [currentUser, location, params, page.action])
 
 	function handleUploadFile(e) {
@@ -213,7 +213,6 @@ export default function New() {
 		}
 	}
 
-	// console.log("imgUrl: ", imgUrl)
 	return (
 		<div className="new">
 			<Sidebar />

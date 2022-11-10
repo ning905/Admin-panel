@@ -25,6 +25,14 @@
 		.search {
 			border-color: gray;
 		}
+
+		.icon {
+			&:hover {
+				background-color: gray;
+				color: lightgrey;
+				border-radius: 50%;
+			}
+		}
 	}
 
 	.sidebar {
@@ -59,6 +67,11 @@
 			color: gray;
 			border: none;
 
+			.css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root,
+			.css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar {
+				color: gray;
+			}
+
 			.cell-with-status {
 				color: rgb(165, 165, 165);
 
@@ -81,6 +94,20 @@
 
 			.delete-button {
 				color: rgb(212, 86, 111);
+			}
+		}
+	}
+
+	.new {
+		.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+			label,
+			input,
+			textarea {
+				color: gray;
+			}
+
+			fieldset {
+				border-color: lightgray;
 			}
 		}
 	}

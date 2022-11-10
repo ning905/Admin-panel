@@ -9,10 +9,12 @@ import ListOutlinedIcon from "@mui/icons-material/ListOutlined"
 import { useContext } from "react"
 import { DarkModeContext } from "../../context/darkModeContext.js"
 import { AuthContext } from "../../context/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 export default function Navbar() {
 	const { dispatch } = useContext(DarkModeContext)
 	const { currentUser } = useContext(AuthContext)
+	const navigate = useNavigate()
 
 	return (
 		<nav className="navbar">
@@ -25,7 +27,7 @@ export default function Navbar() {
 				<ul className="items">
 					<li className="item">
 						<LanguageOutlinedIcon className="icon" />
-						English
+						English*
 					</li>
 					<li className="item">
 						<DarkModeOutlinedIcon
@@ -48,7 +50,12 @@ export default function Navbar() {
 						<ListOutlinedIcon className="icon" />
 					</li>
 					<li className="item">
-						<img src={currentUser?.profile.imgUrl} alt="avatar" className="avatar" />
+						<img
+							src={currentUser?.profile.imgUrl}
+							alt="avatar"
+							className="avatar"
+							onClick={() => navigate("/users/profile")}
+						/>
 					</li>
 				</ul>
 			</div>
