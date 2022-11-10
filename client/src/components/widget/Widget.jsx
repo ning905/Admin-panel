@@ -34,7 +34,7 @@ export default function Widget({ type, amount, diff }) {
 					) : (
 						<KeyboardArrowUp fontSize="small" />
 					)}
-					{diff} %
+					{Math.abs(diff)} %
 				</div>
 				{data.icon}
 			</div>
