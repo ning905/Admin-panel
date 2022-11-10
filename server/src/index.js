@@ -14,10 +14,10 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use("/", deployRouter)
 app.use("/users", userRouter)
 app.use("/products", productRouter)
 app.use("/transactions", transactionRouter)
+app.use("/", deployRouter)
 
 app.use((error, req, res, next) => {
 	console.error(error)

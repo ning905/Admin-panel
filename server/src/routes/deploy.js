@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { sendMessageResponse } from "../utils/serverResponse"
+import { sendMessageResponse } from "../utils/serverResponse.js"
 
 const router = Router()
 
