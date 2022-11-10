@@ -15,7 +15,7 @@ function validateType(type) {
 	return false
 }
 
-function verifyJWT(token) {
+function verifyJWT(token, res) {
 	try {
 		const { username } = jwt.verify(token, process.env.JWT_SECRET)
 		return username
@@ -48,7 +48,7 @@ export async function validateAuthentication(req, res, next) {
 		return sendMessageResponse(res, error.code, error.message)
 	}
 
-	const username = verifyJWT(token)
+	const username = verifyJWT(token, res)
 
 	const foundUser = await dbClient.user.findUnique({ where: { username } })
 	if (!foundUser) {
