@@ -22,9 +22,9 @@ export default function Sidebar() {
 	const navigate = useNavigate()
 
 	function handleLogout() {
+		localStorage.removeItem(process.env.REACT_APP_USER_TOKEN)
 		navigate("/login")
 		userAction({ type: "LOGOUT" })
-		localStorage.removeItem(process.env.REACT_APP_USER_TOKEN)
 	}
 
 	return (
