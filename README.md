@@ -1,6 +1,6 @@
 # Admin Panel
 
-This app is deployed at [https://cohortmanager.netlify.app](https://cohortmanager.netlify.app)
+This app is deployed at [https://ning-admin-panel-project.netlify.app](https://ning-admin-panel-project.netlify.app)
 
 A dynamic full-stack app for online sellers to manage their products and monitor sales. An admin role is added to the system to manage users and can also handle products on their behalf.
 
