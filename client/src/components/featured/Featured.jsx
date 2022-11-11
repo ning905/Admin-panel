@@ -12,7 +12,6 @@ import {
 
 export default function Featured({ transactions }) {
 	const target = 12400
-	const todayRevenue = getRevenue(getThisPeriodItems("day", transactions))
 	const thisWeekRevenue = getRevenue(getThisPeriodItems("week", transactions))
 	const lastWeekRevenue = getRevenue(getLastPeriodItems("week", transactions))
 	const thisMonthRevenue = getRevenue(getThisPeriodItems("month", transactions))
@@ -29,11 +28,11 @@ export default function Featured({ transactions }) {
 	}
 
 	function getDisplayNum(number) {
-		return (number / 1000).toFixed(1)
+		return Math.abs(number / 1000).toFixed(1)
 	}
 
 	function getProgressBarData() {
-		let progress = (todayRevenue / target) * 100
+		let progress = (thisWeekRevenue / target) * 100
 		if (progress % 1) {
 			progress = progress.toFixed(1)
 		}
@@ -51,22 +50,22 @@ export default function Featured({ transactions }) {
 			<div className="bottom">
 				<div className="featured-chart">
 					<CircularProgressbar
-						value={todayRevenue / target}
+						value={getProgressBarData()}
 						text={`${getProgressBarData()}%`}
 						strokeWidth={5}
 					/>
 				</div>
 
-				<p className="title">Total sales made today</p>
-				<p className="amount">£{todayRevenue}</p>
+				<p className="title">Total sales made this week</p>
+				<p className="amount">£{thisWeekRevenue}</p>
 				<p className="desc">
 					Previous transactions processing. Last payments may not be included.
 				</p>
 				<ul className="summary">
 					<li className="item">
 						<div className="item-title">Target</div>
-						<div className={getItemResultClassName(todayRevenue, target)}>
-							{todayRevenue < target ? (
+						<div className={getItemResultClassName(thisWeekRevenue, target)}>
+							{thisWeekRevenue < target ? (
 								<KeyboardArrowDownIcon fontSize="small" />
 							) : (
 								<KeyboardArrowUpOutlinedIcon fontSize="small" />
@@ -82,7 +81,9 @@ export default function Featured({ transactions }) {
 							) : (
 								<KeyboardArrowUpOutlinedIcon fontSize="small" />
 							)}
-							<div className="result-amount">£{getDisplayNum(lastWeekRevenue)}k</div>
+							<div className="result-amount">
+								£{getDisplayNum(thisWeekRevenue - lastWeekRevenue)}k
+							</div>
 						</div>
 					</li>
 					<li className="item">
@@ -95,7 +96,9 @@ export default function Featured({ transactions }) {
 							) : (
 								<KeyboardArrowUpOutlinedIcon fontSize="small" />
 							)}
-							<div className="result-amount">£{getDisplayNum(lastMonthRevenue)}k</div>
+							<div className="result-amount">
+								£{getDisplayNum(thisMonthRevenue - lastMonthRevenue)}k
+							</div>
 						</div>
 					</li>
 				</ul>

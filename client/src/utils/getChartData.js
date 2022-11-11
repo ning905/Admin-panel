@@ -29,15 +29,20 @@ export function getProductRevenueData(transactions, months = 6) {
 }
 
 export function getThisPeriodItems(period, items) {
-	return items.filter((item) => moment(item.createdAt).isSame(moment(), period))
+	return items.filter(
+		(item) =>
+			moment(item.createdAt).isSame(moment(), period) &&
+			item.status !== "CANCELLED"
+	)
 }
 
 export function getLastPeriodItems(period, items) {
-	return items.filter((item) =>
-		moment(item.createdAt).isBetween(
-			moment().subtract(1, period).startOf(period),
-			moment().startOf(period)
-		)
+	return items.filter(
+		(item) =>
+			moment(item.createdAt).isBetween(
+				moment().subtract(1, period).startOf(period),
+				moment().startOf(period)
+			) && item.status !== "CANCELLED"
 	)
 }
 

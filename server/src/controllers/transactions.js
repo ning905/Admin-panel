@@ -41,3 +41,23 @@ export async function getAllTransactionsForUser(req, res) {
 		throw err
 	}
 }
+
+export async function createTransaction(req, res) {
+	const { amount, paymentMethod, status, customer, productId } = req.body
+
+	try {
+		const transaction = await dbClient.transaction.create({
+			data: {
+				amount: Number(amount),
+				paymentMethod,
+				status,
+				customer,
+				productId,
+			},
+		})
+		sendDataResponse(res, 200, transaction)
+	} catch (err) {
+		sendMessageResponse(res, serverError.code, serverError.message)
+		throw err
+	}
+}

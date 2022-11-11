@@ -8,9 +8,11 @@ import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 import { useEffect, useState } from "react"
 import { format } from "date-fns"
+import { useNavigate } from "react-router-dom"
 
 export default function TransactionTable({ rowData }) {
 	const [rows, setRows] = useState([])
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		setRows(rowData)
@@ -51,9 +53,12 @@ export default function TransactionTable({ rowData }) {
 								<TableRow key={row.id}>
 									<TableCell className="table-cell">{row.id}</TableCell>
 									<TableCell className="table-cell">
-										<div className="cell-wrapper">
+										<div
+											className="cell-wrapper"
+											onClick={() => navigate(`/products/${row.product.id}`)}
+										>
 											<img src={row.product.imgUrl} alt="product" className="image" />
-											{row.product.title}
+											<p>{row.product.title}</p>
 										</div>
 									</TableCell>
 									<TableCell className="table-cell">{row.customer}</TableCell>
