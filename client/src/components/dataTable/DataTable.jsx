@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import client from "../../utils/client"
 import { AuthContext } from "../../context/AuthContext"
+import { ClickAwayListener } from "@mui/material"
 
 export default function DataTable() {
 	const [data, setData] = useState([])
@@ -36,7 +37,17 @@ export default function DataTable() {
 	}, [currentUser.role, location.pathname])
 
 	function handleConfirm(row) {
-		row.deleteAction = true
+		const newData = data.map((d) =>
+			d.id === row.id ? { ...d, deleteAction: true } : d
+		)
+		setData(newData)
+	}
+
+	function handleCancelDelete(row) {
+		const newData = data.map((d) =>
+			d.id === row.id ? { ...d, deleteAction: false } : d
+		)
+		setData(newData)
 	}
 
 	async function handleDelete(id) {
@@ -82,12 +93,14 @@ export default function DataTable() {
 					)}
 
 					{params.row.deleteAction && (
-						<div
-							className="delete-button confirm"
-							onClick={() => handleDelete(params.row.id)}
-						>
-							Confirm
-						</div>
+						<ClickAwayListener onClickAway={() => handleCancelDelete(params.row)}>
+							<div
+								className="delete-button confirm"
+								onClick={() => handleDelete(params.row.id)}
+							>
+								Confirm
+							</div>
+						</ClickAwayListener>
 					)}
 				</div>
 			)
