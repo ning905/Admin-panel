@@ -34,6 +34,12 @@
 		justify-content: center;
 	}
 
+	.css-1e2bxag-MuiDataGrid-root
+		.MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)
+		> .MuiDataGrid-cell {
+		overflow: scroll;
+	}
+
 	.cell-with-img {
 		display: flex;
 		align-items: center;
